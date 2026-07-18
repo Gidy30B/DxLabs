@@ -11,21 +11,17 @@ const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').repla
 const defaultWhatsappMessage = 'Hello DxLabs, I would like to discuss a possible collaboration.';
 
 function gmailComposeUrl({ subject = '', body = '' } = {}) {
-  const params = new URLSearchParams({
-    view: 'cm',
-    fs: '1',
-    to: contactEmail,
-  });
-  if (subject) params.set('su', subject);
-  if (body) params.set('body', body);
-  return `https://mail.google.com/mail/?${params.toString()}`;
+  const params = [`view=cm`, `fs=1`, `to=${encodeURIComponent(contactEmail)}`];
+  if (subject) params.push(`su=${encodeURIComponent(subject)}`);
+  if (body) params.push(`body=${encodeURIComponent(body)}`);
+  return `https://mail.google.com/mail/?${params.join('&')}`;
 }
 
 function mailtoUrl({ subject = '', body = '' } = {}) {
-  const params = new URLSearchParams();
-  if (subject) params.set('subject', subject);
-  if (body) params.set('body', body);
-  const query = params.toString();
+  const params = [];
+  if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+  if (body) params.push(`body=${encodeURIComponent(body)}`);
+  const query = params.join('&');
   return `mailto:${contactEmail}${query ? `?${query}` : ''}`;
 }
 
