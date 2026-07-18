@@ -6,7 +6,7 @@ import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
-const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
+const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || 'https://www.linkedin.com/company/dxlabss/';
 const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').replace(/\D/g, '');
 const defaultWhatsappMessage = 'Hello DxLabs, I would like to discuss a possible collaboration.';
 
