@@ -458,32 +458,28 @@ function Contact() {
 }
 
 function Footer() {
+  const footerLinks = [
+    ['About', '#about'],
+    ['Wardle', '#wardle'],
+    ['News', '#news'],
+    ['Contact', '#contact'],
+  ];
+
   return (
     <footer className="site-footer-v8">
       <div className="container">
         <div className="footer-main-v8">
           <div className="footer-brand-v8">
             <Brand footer />
-            <p>Clinician-led health technology for medical learning, healthcare delivery and thoughtful diagnostic innovation.</p>
-            <span className="footer-location-v8">Kenya - Built with African health systems in view</span>
           </div>
           <nav aria-label="Company" className="footer-column-v8">
-            <h2>Company</h2>
-            <a href="#about">About</a>
-            <a href="#focus">Areas of interest</a>
-            <a href="#leadership">Leadership</a>
-            <a href="#news">News &amp; events</a>
+            {footerLinks.map(([label, href]) => (
+              <a href={href} key={href}>
+                {label}
+              </a>
+            ))}
           </nav>
-          <div className="footer-column-v8">
-            <h2>Product</h2>
-            <a href="#wardle">Wardle overview</a>
-            <a href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
-              Visit Wardle <span aria-hidden="true">↗</span>
-            </a>
-          </div>
           <div className="footer-contact-v8">
-            <h2>Contact</h2>
-            <p>Institutional collaboration, research and general company enquiries.</p>
             <a
               className="footer-email-v8"
               href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
@@ -492,18 +488,12 @@ function Footer() {
             >
               {contactEmail}
             </a>
-            <a className="footer-contact-link-v8" href="#contact">
-              Send an enquiry <span aria-hidden="true">→</span>
-            </a>
           </div>
         </div>
         <div className="footer-rule-v8" />
         <div className="footer-bottom-v8">
-          <div>
-            <span>© 2026 DxLabs Limited.</span>
-            <span>All rights reserved.</span>
-          </div>
-          <p>Wardle is a product of DxLabs Limited. Educational content does not replace qualified clinical judgement.</p>
+          <span>© 2026 DxLabs Limited.</span>
+          <span>Wardle is a product of DxLabs Limited.</span>
         </div>
       </div>
     </footer>
