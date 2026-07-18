@@ -31,7 +31,7 @@ img, video { display: block; max-width: 100%; }
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.container { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; }
+.container { width: min(calc(100% - 68px), var(--max)); margin-inline: auto; }
 .section { padding: 88px 0; }
 .eyebrow {
   display: inline-flex;
@@ -456,7 +456,7 @@ footer .brand { color: #fff; }
 }
 
 @media (max-width: 760px) {
-  .container { width: min(calc(100% - 32px), var(--max)); }
+  .container { width: min(calc(100% - 40px), var(--max)); }
   .section, .mission-section-v5, .contact-v5 { padding: 64px 0; }
   .hero { padding: 78px 0 60px; }
   .hero h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
