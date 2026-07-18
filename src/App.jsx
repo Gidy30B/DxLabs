@@ -6,6 +6,8 @@ import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
+const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL || '';
+const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').replace(/\D/g, '');
 
 function gmailComposeUrl({ subject = '', body = '' } = {}) {
   const params = new URLSearchParams({
@@ -24,6 +26,50 @@ function mailtoUrl({ subject = '', body = '' } = {}) {
   if (body) params.set('body', body);
   const query = params.toString();
   return `mailto:${contactEmail}${query ? `?${query}` : ''}`;
+}
+
+function whatsappUrl(message = 'Hello DxLabs, I would like to discuss a possible collaboration.') {
+  if (!whatsappNumber) return '';
+
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
+
+function ContactIcon({ type }) {
+  const icons = {
+    email: (
+      <>
+        <path d="M4.5 6.5h15v11h-15z" />
+        <path d="m5 7 7 6 7-6" />
+      </>
+    ),
+    linkedin: (
+      <>
+        <path d="M7.5 10v7" />
+        <path d="M11.5 17v-4a3 3 0 0 1 6 0v4" />
+        <path d="M7.5 7.5v.01" />
+      </>
+    ),
+    whatsapp: (
+      <>
+        <path d="M7.3 18.4 4.8 19l.7-2.4a7.4 7.4 0 1 1 1.8 1.8z" />
+        <path d="M9.2 8.8c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.6 1.3c.1.2 0 .5-.1.6l-.4.5c.5.9 1.2 1.6 2.1 2.1l.5-.4c.2-.2.4-.2.7-.1l1.3.6c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.3-1.1.5-1.8.3-2.8-.7-5-2.9-5.7-5.7-.2-.7 0-1.3.3-1.8z" />
+      </>
+    ),
+    send: (
+      <>
+        <path d="M20 4 9.5 14.5" />
+        <path d="m20 4-5 16-5.5-5.5L4 12z" />
+      </>
+    ),
+  };
+
+  return (
+    <svg aria-hidden="true" className="contact-icon" fill="none" viewBox="0 0 24 24">
+      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8">
+        {icons[type]}
+      </g>
+    </svg>
+  );
 }
 
 const navItems = [
@@ -402,6 +448,32 @@ function Leadership() {
 }
 
 function Contact() {
+  const directChannels = [
+    {
+      label: 'Email',
+      value: contactEmail,
+      description: 'General enquiries and partnerships',
+      href: mailtoUrl(),
+      icon: 'email',
+    },
+    linkedInUrl && {
+      label: 'LinkedIn',
+      value: 'DxLabs',
+      description: 'Company updates and professional connections',
+      href: linkedInUrl,
+      icon: 'linkedin',
+      external: true,
+    },
+    whatsappNumber && {
+      label: 'WhatsApp',
+      value: 'Chat with DxLabs',
+      description: 'Quick enquiries and introductions',
+      href: whatsappUrl(),
+      icon: 'whatsapp',
+      external: true,
+    },
+  ].filter(Boolean);
+
   function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -435,17 +507,41 @@ function Contact() {
               <span>Institutional collaboration</span>
               <span>Health systems and research</span>
             </div>
-            <a
-              className="contact-email-v5"
-              href={mailtoUrl()}
-              rel="noopener noreferrer"
-            >
-              <small>Direct email</small>
-              <strong>{contactEmail}</strong>
-            </a>
+            <div aria-label="Direct contact options" className="contact-channels-v13">
+              {directChannels.map((channel) => (
+                <a
+                  aria-label={`${channel.label}: ${channel.value}`}
+                  className={`contact-channel-v13 contact-channel-${channel.icon}`}
+                  href={channel.href}
+                  key={channel.label}
+                  rel={channel.external ? 'noopener noreferrer' : undefined}
+                  target={channel.external ? '_blank' : undefined}
+                >
+                  <span className="contact-channel-icon-v13">
+                    <ContactIcon type={channel.icon} />
+                  </span>
+                  <span className="contact-channel-copy-v13">
+                    <small>{channel.label}</small>
+                    <strong>{channel.value}</strong>
+                    <em>{channel.description}</em>
+                  </span>
+                  <span aria-hidden="true" className="contact-channel-arrow-v13">
+                    →
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
           <form className="contact-form-v5 reveal" onSubmit={handleSubmit}>
-            <h3>Send a message</h3>
+            <div className="contact-form-head-v13">
+              <span className="contact-form-icon-v13">
+                <ContactIcon type="send" />
+              </span>
+              <div>
+                <h3>Send a message</h3>
+                <p>Share a brief note and choose how you would like to open it.</p>
+              </div>
+            </div>
             <div className="form-row-v5">
               <div className="field">
                 <label htmlFor="name">Name</label>
@@ -468,13 +564,13 @@ function Contact() {
             </div>
             <div className="contact-submit-row-v12">
               <button className="button button-primary contact-submit-v5" type="submit" value="app">
-                Email app <span aria-hidden="true">→</span>
+                <ContactIcon type="email" /> Email app <span aria-hidden="true">→</span>
               </button>
               <button className="button button-secondary contact-submit-v5" type="submit" value="gmail">
-                Gmail web <span aria-hidden="true">↗</span>
+                <ContactIcon type="send" /> Gmail web <span aria-hidden="true">↗</span>
               </button>
             </div>
-            <p className="form-note-v5">Both options prepare the message before you send it.</p>
+            <p className="form-note-v5">Your message opens as a draft. Nothing is sent automatically.</p>
           </form>
         </div>
       </div>
@@ -483,6 +579,29 @@ function Contact() {
 }
 
 function Footer() {
+  const footerContacts = [
+    {
+      label: contactEmail,
+      href: mailtoUrl(),
+      icon: 'email',
+      ariaLabel: `Email: ${contactEmail}`,
+    },
+    linkedInUrl && {
+      label: 'LinkedIn',
+      href: linkedInUrl,
+      icon: 'linkedin',
+      ariaLabel: 'LinkedIn: DxLabs',
+      external: true,
+    },
+    whatsappNumber && {
+      label: 'WhatsApp',
+      href: whatsappUrl(),
+      icon: 'whatsapp',
+      ariaLabel: 'WhatsApp: Chat with DxLabs',
+      external: true,
+    },
+  ].filter(Boolean);
+
   return (
     <footer className="site-footer-v8">
       <div className="container">
@@ -507,13 +626,21 @@ function Footer() {
           </div>
           <div className="footer-contact-v8">
             <h2>Contact</h2>
-            <a
-              className="footer-email-v8"
-              href={mailtoUrl()}
-              rel="noopener noreferrer"
-            >
-              {contactEmail}
-            </a>
+            <div className="footer-contact-links-v13">
+              {footerContacts.map((contact) => (
+                <a
+                  aria-label={contact.ariaLabel}
+                  className={`footer-contact-link-v13 footer-contact-${contact.icon}`}
+                  href={contact.href}
+                  key={contact.label}
+                  rel={contact.external ? 'noopener noreferrer' : undefined}
+                  target={contact.external ? '_blank' : undefined}
+                >
+                  <ContactIcon type={contact.icon} />
+                  <span>{contact.label}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
         <div className="footer-rule-v8" />
