@@ -6,8 +6,9 @@ import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
-const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL || '';
+const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
 const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').replace(/\D/g, '');
+const defaultWhatsappMessage = 'Hello DxLabs, I would like to discuss a possible collaboration.';
 
 function gmailComposeUrl({ subject = '', body = '' } = {}) {
   const params = new URLSearchParams({
@@ -28,14 +29,63 @@ function mailtoUrl({ subject = '', body = '' } = {}) {
   return `mailto:${contactEmail}${query ? `?${query}` : ''}`;
 }
 
-function whatsappUrl(message = 'Hello DxLabs, I would like to discuss a possible collaboration.') {
+function whatsappUrl(message = defaultWhatsappMessage) {
   if (!whatsappNumber) return '';
 
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
+function getContactChannels() {
+  return [
+    {
+      key: 'email',
+      shortLabel: 'Email',
+      accessibleLabel: 'Email DxLabs',
+      icon: 'email',
+      href: mailtoUrl(),
+      external: false,
+      footerLabel: contactEmail,
+    },
+    linkedInUrl
+      ? {
+          key: 'linkedin',
+          shortLabel: 'LinkedIn',
+          accessibleLabel: 'Connect with DxLabs on LinkedIn',
+          icon: 'linkedin',
+          href: linkedInUrl,
+          external: true,
+          footerLabel: 'LinkedIn',
+        }
+      : null,
+    whatsappNumber
+      ? {
+          key: 'whatsapp',
+          shortLabel: 'WhatsApp',
+          accessibleLabel: 'Chat with DxLabs on WhatsApp',
+          icon: 'whatsapp',
+          href: whatsappUrl(),
+          external: true,
+          footerLabel: 'WhatsApp',
+        }
+      : null,
+  ].filter(Boolean);
+}
+
 function ContactIcon({ type }) {
   const icons = {
+    contact: (
+      <>
+        <path d="M7 9.5h10" />
+        <path d="M7 13.5h6" />
+        <path d="M5.8 18.2 4 20V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10.2a2 2 0 0 1-2 2z" />
+      </>
+    ),
+    close: (
+      <>
+        <path d="m7 7 10 10" />
+        <path d="M17 7 7 17" />
+      </>
+    ),
     email: (
       <>
         <path d="M4.5 6.5h15v11h-15z" />
@@ -448,32 +498,6 @@ function Leadership() {
 }
 
 function Contact() {
-  const directChannels = [
-    {
-      label: 'Email',
-      value: contactEmail,
-      description: 'General enquiries and partnerships',
-      href: mailtoUrl(),
-      icon: 'email',
-    },
-    linkedInUrl && {
-      label: 'LinkedIn',
-      value: 'DxLabs',
-      description: 'Company updates and professional connections',
-      href: linkedInUrl,
-      icon: 'linkedin',
-      external: true,
-    },
-    whatsappNumber && {
-      label: 'WhatsApp',
-      value: 'Chat with DxLabs',
-      description: 'Quick enquiries and introductions',
-      href: whatsappUrl(),
-      icon: 'whatsapp',
-      external: true,
-    },
-  ].filter(Boolean);
-
   function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -507,30 +531,13 @@ function Contact() {
               <span>Institutional collaboration</span>
               <span>Health systems and research</span>
             </div>
-            <div aria-label="Direct contact options" className="contact-channels-v13">
-              {directChannels.map((channel) => (
-                <a
-                  aria-label={`${channel.label}: ${channel.value}`}
-                  className={`contact-channel-v13 contact-channel-${channel.icon}`}
-                  href={channel.href}
-                  key={channel.label}
-                  rel={channel.external ? 'noopener noreferrer' : undefined}
-                  target={channel.external ? '_blank' : undefined}
-                >
-                  <span className="contact-channel-icon-v13">
-                    <ContactIcon type={channel.icon} />
-                  </span>
-                  <span className="contact-channel-copy-v13">
-                    <small>{channel.label}</small>
-                    <strong>{channel.value}</strong>
-                    <em>{channel.description}</em>
-                  </span>
-                  <span aria-hidden="true" className="contact-channel-arrow-v13">
-                    →
-                  </span>
-                </a>
-              ))}
-            </div>
+            <a className="contact-email-v5" href={mailtoUrl()}>
+              <span>
+                <ContactIcon type="email" />
+              </span>
+              <small>Direct email</small>
+              <strong>{contactEmail}</strong>
+            </a>
           </div>
           <form className="contact-form-v5 reveal" onSubmit={handleSubmit}>
             <div className="contact-form-head-v13">
@@ -579,28 +586,7 @@ function Contact() {
 }
 
 function Footer() {
-  const footerContacts = [
-    {
-      label: contactEmail,
-      href: mailtoUrl(),
-      icon: 'email',
-      ariaLabel: `Email: ${contactEmail}`,
-    },
-    linkedInUrl && {
-      label: 'LinkedIn',
-      href: linkedInUrl,
-      icon: 'linkedin',
-      ariaLabel: 'LinkedIn: DxLabs',
-      external: true,
-    },
-    whatsappNumber && {
-      label: 'WhatsApp',
-      href: whatsappUrl(),
-      icon: 'whatsapp',
-      ariaLabel: 'WhatsApp: Chat with DxLabs',
-      external: true,
-    },
-  ].filter(Boolean);
+  const footerContacts = getContactChannels();
 
   return (
     <footer className="site-footer-v8">
@@ -629,15 +615,15 @@ function Footer() {
             <div className="footer-contact-links-v13">
               {footerContacts.map((contact) => (
                 <a
-                  aria-label={contact.ariaLabel}
-                  className={`footer-contact-link-v13 footer-contact-${contact.icon}`}
+                  aria-label={contact.accessibleLabel}
+                  className={`footer-contact-link-v13 footer-contact-${contact.key}`}
                   href={contact.href}
-                  key={contact.label}
+                  key={contact.key}
                   rel={contact.external ? 'noopener noreferrer' : undefined}
                   target={contact.external ? '_blank' : undefined}
                 >
                   <ContactIcon type={contact.icon} />
-                  <span>{contact.label}</span>
+                  <span>{contact.footerLabel}</span>
                 </a>
               ))}
             </div>
@@ -650,6 +636,72 @@ function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FloatingContactMenu() {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+  const channels = getContactChannels();
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handlePointerDown(event) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div className="floating-contact-v14" ref={menuRef}>
+      {open && (
+        <div className="floating-contact-options-v14" id="floating-contact-options">
+          {channels.map((channel, index) => (
+            <a
+              aria-label={channel.accessibleLabel}
+              className={`floating-contact-option-v14 floating-contact-${channel.key}`}
+              href={channel.href}
+              key={channel.key}
+              onClick={() => setOpen(false)}
+              rel={channel.external ? 'noopener noreferrer' : undefined}
+              style={{ '--contact-index': index }}
+              target={channel.external ? '_blank' : undefined}
+            >
+              <span className="floating-contact-label-v14">{channel.shortLabel}</span>
+              <span className="floating-contact-icon-v14">
+                <ContactIcon type={channel.icon} />
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
+      <button
+        aria-controls="floating-contact-options"
+        aria-expanded={open}
+        aria-label={open ? 'Close contact options' : 'Open contact options'}
+        className={`floating-contact-trigger-v14${open ? ' open' : ''}`}
+        onClick={() => setOpen((current) => !current)}
+        type="button"
+      >
+        <ContactIcon type={open ? 'close' : 'contact'} />
+      </button>
+    </div>
   );
 }
 
@@ -764,6 +816,7 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
+      {!demoOpen && <FloatingContactMenu />}
       <DemoModal onClose={() => setDemoOpen(false)} open={demoOpen} />
     </>
   );
