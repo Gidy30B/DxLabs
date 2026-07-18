@@ -524,20 +524,17 @@ function Contact() {
             <div>
               <div className="eyebrow light">Contact</div>
               <h2>Start the right conversation.</h2>
-              <p>DxLabs welcomes conversations with educators, institutions, researchers and health-system partners.</p>
+              <p>
+                Tell us about your institution, project or healthcare challenge. We welcome conversations with
+                educators, researchers and health-system partners.
+              </p>
             </div>
             <div aria-label="Enquiry areas" className="contact-scope-v11">
               <span>Medical education</span>
               <span>Institutional collaboration</span>
               <span>Health systems and research</span>
             </div>
-            <a className="contact-email-v5" href={mailtoUrl()}>
-              <span>
-                <ContactIcon type="email" />
-              </span>
-              <small>Direct email</small>
-              <strong>{contactEmail}</strong>
-            </a>
+            <p className="contact-support-v15">Use the form to provide enough context for a focused response.</p>
           </div>
           <form className="contact-form-v5 reveal" onSubmit={handleSubmit}>
             <div className="contact-form-head-v13">
@@ -546,7 +543,7 @@ function Contact() {
               </span>
               <div>
                 <h3>Send a message</h3>
-                <p>Share a brief note and choose how you would like to open it.</p>
+                <p>Share the context, organisation involved and the outcome you would like to discuss.</p>
               </div>
             </div>
             <div className="form-row-v5">
@@ -567,14 +564,22 @@ function Contact() {
             </div>
             <div className="field">
               <label htmlFor="message">Message</label>
-              <textarea id="message" name="message" placeholder="Briefly describe what you would like to discuss." required />
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Describe the opportunity, project or question you would like to discuss."
+                required
+              />
             </div>
-            <div className="contact-submit-row-v12">
+            <div className="contact-submit-row-v15">
               <button className="button button-primary contact-submit-v5" type="submit" value="app">
-                <ContactIcon type="email" /> Email app <span aria-hidden="true">→</span>
+                <ContactIcon type="email" />
+                Prepare email
+                <span aria-hidden="true">→</span>
               </button>
-              <button className="button button-secondary contact-submit-v5" type="submit" value="gmail">
-                <ContactIcon type="send" /> Gmail web <span aria-hidden="true">↗</span>
+              <button className="contact-gmail-link-v15" type="submit" value="gmail">
+                Open in Gmail
+                <span aria-hidden="true">↗</span>
               </button>
             </div>
             <p className="form-note-v5">Your message opens as a draft. Nothing is sent automatically.</p>
@@ -586,8 +591,6 @@ function Contact() {
 }
 
 function Footer() {
-  const footerContacts = getContactChannels();
-
   return (
     <footer className="site-footer-v8">
       <div className="container">
@@ -611,22 +614,12 @@ function Footer() {
             <a href="#contact">Contact</a>
           </div>
           <div className="footer-contact-v8">
-            <h2>Contact</h2>
-            <div className="footer-contact-links-v13">
-              {footerContacts.map((contact) => (
-                <a
-                  aria-label={contact.accessibleLabel}
-                  className={`footer-contact-link-v13 footer-contact-${contact.key}`}
-                  href={contact.href}
-                  key={contact.key}
-                  rel={contact.external ? 'noopener noreferrer' : undefined}
-                  target={contact.external ? '_blank' : undefined}
-                >
-                  <ContactIcon type={contact.icon} />
-                  <span>{contact.footerLabel}</span>
-                </a>
-              ))}
-            </div>
+            <h2>Work with us</h2>
+            <p>Interested in medical education, healthcare technology or research collaboration?</p>
+            <a className="footer-contact-cta-v15" href="#contact">
+              Start a conversation
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
         <div className="footer-rule-v8" />
