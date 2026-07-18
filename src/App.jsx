@@ -458,13 +458,6 @@ function Contact() {
 }
 
 function Footer() {
-  const footerLinks = [
-    ['About', '#about'],
-    ['Wardle', '#wardle'],
-    ['News', '#news'],
-    ['Contact', '#contact'],
-  ];
-
   return (
     <footer className="site-footer-v8">
       <div className="container">
@@ -473,13 +466,22 @@ function Footer() {
             <Brand footer />
           </div>
           <nav aria-label="Company" className="footer-column-v8">
-            {footerLinks.map(([label, href]) => (
-              <a href={href} key={href}>
-                {label}
-              </a>
-            ))}
+            <h2>Company</h2>
+            <a href="#about">About</a>
+            <a href="#focus">Areas</a>
+            <a href="#leadership">Leadership</a>
+            <a href="#news">News</a>
           </nav>
+          <div className="footer-column-v8">
+            <h2>Product</h2>
+            <a href="#wardle">Wardle</a>
+            <a href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
+              Visit Wardle <span aria-hidden="true">↗</span>
+            </a>
+            <a href="#contact">Contact</a>
+          </div>
           <div className="footer-contact-v8">
+            <h2>Contact</h2>
             <a
               className="footer-email-v8"
               href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
