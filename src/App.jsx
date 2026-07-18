@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import logo from '../assets/dxlabs-logo.svg';
 import presentationOne from '../assets/meded-africa-2026-presentation-1.jpeg';
-import presentationTwo from '../assets/meded-africa-2026-presentation-2.jpeg';
 import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
-const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || 'https://www.linkedin.com/company/dxlabss/';
+const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
 const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').replace(/\D/g, '');
 const defaultWhatsappMessage = 'Hello DxLabs, I would like to discuss a possible collaboration.';
 
@@ -377,13 +376,6 @@ function News() {
       label: 'Oral presentation',
       caption: 'Wardle beta pilot data shared with the regional medical education community.',
       stat: '85 trainees',
-    },
-    {
-      src: presentationTwo,
-      alt: 'Wardle presentation on stage at MedEd Africa 2026 in Addis Ababa',
-      label: 'Conference stage',
-      caption: 'A product milestone from daily case practice to conference-stage discussion.',
-      stat: 'Addis Ababa',
     },
     {
       src: conferenceVenue,
