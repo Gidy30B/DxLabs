@@ -290,7 +290,7 @@ function News() {
         <div className="news-head-v7">
           <div className="reveal">
             <div className="eyebrow">News &amp; events</div>
-            <h2>DxLabs in practice.</h2>
+            <h2>A MedEd Africa milestone.</h2>
           </div>
           <p className="reveal">
             Wardle's beta pilot moved from product build to public medical education conversation, with early
