@@ -5,6 +5,8 @@ import presentationTwo from '../assets/meded-africa-2026-presentation-2.jpeg';
 import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
+const contactEmail = 'dxlabssupport@gmail.com';
+
 const navItems = [
   ['Company', '#about'],
   ['Wardle', '#wardle'],
@@ -390,7 +392,11 @@ function Contact() {
         data.get('organisation') || 'Not provided'
       }\n\nMessage:\n${data.get('message')}`
     );
-    window.location.href = `mailto:dxlabssupport@gmail.com?subject=${subject}&body=${body}`;
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}&su=${subject}&body=${body}`,
+      '_blank',
+      'noopener,noreferrer'
+    );
   }
 
   return (
@@ -408,9 +414,14 @@ function Contact() {
               <span>Institutional collaboration</span>
               <span>Health systems and research</span>
             </div>
-            <a className="contact-email-v5" href="mailto:dxlabssupport@gmail.com">
+            <a
+              className="contact-email-v5"
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <small>Direct email</small>
-              <strong>dxlabssupport@gmail.com</strong>
+              <strong>{contactEmail}</strong>
             </a>
           </div>
           <form className="contact-form-v5 reveal" onSubmit={handleSubmit}>
@@ -473,8 +484,13 @@ function Footer() {
           <div className="footer-contact-v8">
             <h2>Contact</h2>
             <p>Institutional collaboration, research and general company enquiries.</p>
-            <a className="footer-email-v8" href="mailto:dxlabssupport@gmail.com">
-              dxlabssupport@gmail.com
+            <a
+              className="footer-email-v8"
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {contactEmail}
             </a>
             <a className="footer-contact-link-v8" href="#contact">
               Send an enquiry <span aria-hidden="true">→</span>
