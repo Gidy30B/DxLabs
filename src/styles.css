@@ -412,7 +412,8 @@ p { margin: 0; }
 .contact-form-v5 input, .contact-form-v5 textarea { width: 100%; border: 1px solid var(--line); border-radius: 11px; background: #fff; padding: 12px 13px; color: var(--ink); }
 .contact-form-v5 textarea { min-height: 130px; resize: vertical; }
 .contact-form-v5 input:focus, .contact-form-v5 textarea:focus { outline: 2px solid #77aee5; outline-offset: 1px; border-color: transparent; }
-.contact-submit-v5 { width: 100%; margin-top: 4px; }
+.contact-submit-row-v12 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.contact-submit-v5 { width: 100%; }
 .form-note-v5 { margin-top: 10px; color: #8695a8; font-size: .72rem; text-align: center; }
 
 footer { padding: 30px 0 24px; color: rgba(255, 255, 255, .75); background: #07182e; }
@@ -467,6 +468,7 @@ footer .brand { color: #fff; }
   .team-photo-v5 { min-height: 210px; }
   .contact-copy-v5, .contact-form-v5 { padding: 34px 26px; }
   .form-row-v5 { grid-template-columns: 1fr; }
+  .contact-submit-row-v12 { grid-template-columns: 1fr; }
   .footer-main-v8 { grid-template-columns: 1fr; }
   .footer-bottom-v8 { flex-direction: column; gap: 8px; }
 }

@@ -7,6 +7,25 @@ import gideonPhoto from '../assets/dr-gideon-saningo.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
 
+function gmailComposeUrl({ subject = '', body = '' } = {}) {
+  const params = new URLSearchParams({
+    view: 'cm',
+    fs: '1',
+    to: contactEmail,
+  });
+  if (subject) params.set('su', subject);
+  if (body) params.set('body', body);
+  return `https://mail.google.com/mail/?${params.toString()}`;
+}
+
+function mailtoUrl({ subject = '', body = '' } = {}) {
+  const params = new URLSearchParams();
+  if (subject) params.set('subject', subject);
+  if (body) params.set('body', body);
+  const query = params.toString();
+  return `mailto:${contactEmail}${query ? `?${query}` : ''}`;
+}
+
 const navItems = [
   ['Company', '#about'],
   ['Wardle', '#wardle'],
@@ -386,17 +405,19 @@ function Contact() {
   function handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const subject = encodeURIComponent(`DxLabs enquiry from ${data.get('name')}`);
-    const body = encodeURIComponent(
+    const subject = `DxLabs enquiry from ${data.get('name')}`;
+    const body =
       `Name: ${data.get('name')}\nEmail: ${data.get('email')}\nOrganisation: ${
         data.get('organisation') || 'Not provided'
-      }\n\nMessage:\n${data.get('message')}`
-    );
-    window.open(
-      `https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}&su=${subject}&body=${body}`,
-      '_blank',
-      'noopener,noreferrer'
-    );
+      }\n\nMessage:\n${data.get('message')}`;
+    const submitter = event.nativeEvent.submitter;
+
+    if (submitter?.value === 'gmail') {
+      window.open(gmailComposeUrl({ subject, body }), '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    window.location.href = mailtoUrl({ subject, body });
   }
 
   return (
@@ -416,9 +437,8 @@ function Contact() {
             </div>
             <a
               className="contact-email-v5"
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
+              href={mailtoUrl()}
               rel="noopener noreferrer"
-              target="_blank"
             >
               <small>Direct email</small>
               <strong>{contactEmail}</strong>
@@ -446,10 +466,15 @@ function Contact() {
               <label htmlFor="message">Message</label>
               <textarea id="message" name="message" placeholder="Briefly describe what you would like to discuss." required />
             </div>
-            <button className="button button-primary contact-submit-v5" type="submit">
-              Prepare email <span aria-hidden="true">→</span>
-            </button>
-            <p className="form-note-v5">Your email application will open with the message prepared.</p>
+            <div className="contact-submit-row-v12">
+              <button className="button button-primary contact-submit-v5" type="submit" value="app">
+                Email app <span aria-hidden="true">→</span>
+              </button>
+              <button className="button button-secondary contact-submit-v5" type="submit" value="gmail">
+                Gmail web <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <p className="form-note-v5">Both options prepare the message before you send it.</p>
           </form>
         </div>
       </div>
@@ -484,9 +509,8 @@ function Footer() {
             <h2>Contact</h2>
             <a
               className="footer-email-v8"
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactEmail}`}
+              href={mailtoUrl()}
               rel="noopener noreferrer"
-              target="_blank"
             >
               {contactEmail}
             </a>
