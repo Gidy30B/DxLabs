@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DxLabs — Building the future of digital health, from Africa</title>
+<meta name="description" content="DxLabs is a digital health innovation company building technology that empowers healthcare professionals through better learning, smarter workflows, and accessible digital solutions. Home of Wardle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#070C16;
+    --surface:#0F1A2E;
+    --surface-2:#152238;
+    --line: rgba(240,244,250,0.08);
+    --teal:#00B4A6;
+    --teal-soft: rgba(0,180,166,0.14);
+    --amber:#F4A261;
+    --paper:#F5F7FA;
+    --muted:#8B98AE;
+    --muted-2:#5C6A82;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --maxw: 1180px;
+    --radius: 18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--teal); color:var(--ink); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 32px; }
+  section{ position:relative; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--teal); display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .eyebrow::before{ content:''; width:22px; height:1px; background:var(--teal); }
+  h1,h2,h3{ font-family:var(--display); font-weight:600; letter-spacing:-0.01em; }
+  h2{ font-size:clamp(28px,4vw,42px); margin-bottom:16px; }
+  .lede{ color:var(--muted); font-size:18px; max-width:640px; }
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){ .reveal{ transition:none; opacity:1; transform:none; } }
+
+  /* NAV */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    background:rgba(7,12,22,0.72); border-bottom:1px solid var(--line);
+  }
+  nav{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; max-width:var(--maxw); margin:0 auto; }
+  .logo{ display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:18px; }
+  .logo-mark{ width:26px; height:26px; border-radius:7px; background:linear-gradient(135deg, var(--teal), #0080A6); position:relative; }
+  .logo-mark::after{ content:''; position:absolute; inset:7px; border-radius:3px; background:var(--ink); }
+  .nav-links{ display:flex; gap:36px; font-size:14px; color:var(--muted); }
+  .nav-links a:hover{ color:var(--paper); }
+  .nav-cta{
+    font-size:14px; font-weight:600; padding:9px 18px; border-radius:100px;
+    background:var(--paper); color:var(--ink);
+  }
+  @media (max-width:860px){ .nav-links{ display:none; } }
+
+  /* HERO */
+  .hero{ padding:170px 0 120px; overflow:hidden; }
+  .hero-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:center; }
+  @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(38px,5.6vw,64px); line-height:1.05; margin-bottom:22px; }
+  .hero h1 em{ font-style:normal; color:var(--teal); }
+  .hero p.lede{ margin-bottom:36px; font-size:19px; }
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:13px 24px; border-radius:100px;
+    font-weight:600; font-size:15px; transition:transform .2s ease, background .2s ease;
+  }
+  .btn-primary{ background:var(--teal); color:var(--ink); }
+  .btn-primary:hover{ transform:translateY(-2px); background:#0FCABB; }
+  .btn-ghost{ border:1px solid var(--line); color:var(--paper); }
+  .btn-ghost:hover{ border-color:var(--teal); transform:translateY(-2px); }
+
+  /* SIGNATURE: tile-to-pulse animation */
+  .signature{ position:relative; height:380px; }
+  .signature svg{ width:100%; height:100%; }
+  .tile{ fill:var(--surface-2); stroke:var(--line); stroke-width:1; }
+  .tile.on{ fill:var(--teal-soft); stroke:var(--teal); }
+  .pulse-line{ fill:none; stroke:var(--teal); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:900; stroke-dashoffset:900; animation:draw 3.6s ease-in-out infinite; }
+  @keyframes draw{ 0%{stroke-dashoffset:900;} 55%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-900;} }
+  .pulse-dot{ fill:var(--amber); animation:blink 3.6s ease-in-out infinite; }
+  @keyframes blink{ 0%,45%{opacity:0;} 52%,58%{opacity:1;} 65%,100%{opacity:0;} }
+
+  /* SECTION generic */
+  .section{ padding:110px 0; border-top:1px solid var(--line); }
+  .section-head{ max-width:640px; margin-bottom:56px; }
+
+  /* ABOUT */
+  .about-cols{ display:grid; grid-template-columns:1fr 1fr; gap:64px; }
+  @media (max-width:860px){ .about-cols{ grid-template-columns:1fr; } }
+  .about-cols p{ color:var(--muted); margin-bottom:18px; }
+  .stat-strip{ display:flex; gap:40px; margin-top:36px; flex-wrap:wrap; }
+  .stat{ }
+  .stat b{ display:block; font-family:var(--mono); font-size:26px; color:var(--teal); }
+  .stat span{ font-size:13px; color:var(--muted-2); }
+
+  /* MISSION/VISION */
+  .mv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-radius:var(--radius); overflow:hidden; }
+  @media (max-width:760px){ .mv-grid{ grid-template-columns:1fr; } }
+  .mv-card{ background:var(--surface); padding:48px; }
+  .mv-card .eyebrow{ margin-bottom:22px; }
+  .mv-card p{ font-size:20px; font-family:var(--display); font-weight:500; line-height:1.4; }
+
+  /* WHAT WE BUILD */
+  .card-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:900px){ .card-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .card-grid{ grid-template-columns:1fr; } }
+  .build-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:30px;
+    transition:border-color .25s ease, transform .25s ease;
+  }
+  .build-card:hover{ border-color:var(--teal); transform:translateY(-4px); }
+  .build-card .icon{ width:42px; height:42px; border-radius:11px; background:var(--teal-soft); display:flex; align-items:center; justify-content:center; margin-bottom:20px; font-size:20px; }
+  .build-card h3{ font-size:17px; margin-bottom:8px; }
+  .build-card p{ color:var(--muted); font-size:14.5px; }
+
+  /* PRODUCT SHOWCASE */
+  .product-panel{
+    background:linear-gradient(160deg, var(--surface), var(--surface-2));
+    border:1px solid var(--line); border-radius:24px; padding:56px; display:grid;
+    grid-template-columns:1fr 1fr; gap:50px; align-items:center; position:relative; overflow:hidden;
+  }
+  @media (max-width:900px){ .product-panel{ grid-template-columns:1fr; padding:32px; } }
+  .badge{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:12px;
+    background:var(--teal-soft); color:var(--teal); padding:6px 12px; border-radius:100px; margin-bottom:18px;
+  }
+  .product-panel h3{ font-size:30px; margin-bottom:14px; }
+  .product-panel p.desc{ color:var(--muted); margin-bottom:22px; }
+  .feature-list{ list-style:none; display:grid; gap:10px; margin-bottom:28px; }
+  .feature-list li{ display:flex; gap:10px; font-size:14.5px; color:var(--paper); }
+  .feature-list li::before{ content:'✓'; color:var(--teal); font-weight:700; }
+  .score-mock{
+    background:var(--ink); border:1px solid var(--line); border-radius:16px; padding:28px;
+  }
+  .score-mock .title{ font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:14px; display:flex; justify-content:space-between; }
+  .grid5{ display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:18px; }
+  .tile-cell{ aspect-ratio:1; border-radius:6px; background:var(--surface-2); border:1px solid var(--line); }
+  .tile-cell.win{ background:var(--teal-soft); border-color:var(--teal); }
+  .tile-cell.miss{ background:rgba(244,162,97,0.12); border-color:var(--amber); }
+  .score-mock .caption{ font-size:13px; color:var(--muted-2); font-family:var(--mono); }
+  .demo-video{
+    margin-top:24px; border:1px solid var(--line); border-radius:20px; overflow:hidden;
+    background:var(--surface); aspect-ratio:16/9; position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .demo-video video, .demo-video img{ width:100%; height:100%; object-fit:cover; }
+  .demo-video .ph{ color:var(--muted-2); font-family:var(--mono); font-size:13px; text-align:center; }
+  .demo-video .play{
+    width:56px; height:56px; border-radius:50%; background:var(--teal); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:20px;
+  }
+  .coming-soon{
+    margin-top:20px; border:1px dashed var(--line); border-radius:20px; padding:26px 30px;
+    display:flex; align-items:center; justify-content:space-between; color:var(--muted-2);
+    font-family:var(--mono); font-size:13px;
+  }
+
+  /* MILESTONE TIMELINE */
+  .timeline{ position:relative; padding-left:26px; border-left:1px solid var(--line); display:grid; gap:34px; }
+  .t-item{ position:relative; }
+  .t-item::before{
+    content:''; position:absolute; left:-32px; top:4px; width:12px; height:12px; border-radius:50%;
+    background:var(--surface-2); border:2px solid var(--muted-2);
+  }
+  .t-item.done::before{ background:var(--teal); border-color:var(--teal); }
+  .t-item .t-label{ font-family:var(--mono); font-size:12px; color:var(--muted-2); margin-bottom:4px; }
+  .t-item.done .t-label{ color:var(--teal); }
+  .t-item h3{ font-size:17px; margin-bottom:4px; }
+  .t-item p{ color:var(--muted); font-size:14.5px; }
+  .conf-photos{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:44px; }
+  @media (max-width:760px){ .conf-photos{ grid-template-columns:repeat(2,1fr); } }
+  .photo-ph{
+    aspect-ratio:4/3; border-radius:12px; background:var(--surface); border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--muted-2); font-size:12px; font-family:var(--mono); text-align:center; padding:10px;
+  }
+
+  /* FOUNDERS */
+  .founder-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width:760px){ .founder-grid{ grid-template-columns:1fr; } }
+  .founder-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:32px; }
+  .avatar{
+    width:100%; aspect-ratio:1/1; max-width:180px; border-radius:16px;
+    background:var(--ink); border:1px dashed var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:400; font-size:11px; color:var(--muted-2);
+    margin-bottom:18px; text-align:center; padding:10px; overflow:hidden;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; border-radius:16px; }
+  .founder-card h3{ font-size:18px; }
+  .founder-card .role{ color:var(--teal); font-family:var(--mono); font-size:12.5px; margin-bottom:14px; display:block; }
+  .founder-card p{ color:var(--muted); font-size:14.5px; margin-bottom:18px; }
+  .founder-links{ display:flex; gap:14px; font-size:13px; color:var(--muted-2); }
+  .founder-links a:hover{ color:var(--teal); }
+  .founder-note{ color:var(--muted); max-width:720px; margin-top:36px; font-size:15px; }
+
+  /* WHY GRID */
+  .why-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border-radius:var(--radius); overflow:hidden; }
+  @media (max-width:860px){ .why-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-cell{ background:var(--surface); padding:34px 26px; }
+  .why-cell .num{ font-family:var(--mono); font-size:12px; color:var(--muted-2); margin-bottom:14px; }
+  .why-cell h3{ font-size:16px; }
+
+  /* ROADMAP FLOW */
+  .flow{ display:grid; gap:0; max-width:520px; }
+  .flow-item{
+    padding:18px 24px; border:1px solid var(--line); border-radius:14px; background:var(--surface);
+    font-family:var(--display); font-weight:500; position:relative;
+  }
+  .flow-item.current{ border-color:var(--teal); background:var(--teal-soft); }
+  .flow-arrow{ display:flex; justify-content:center; padding:6px 0; color:var(--muted-2); font-family:var(--mono); font-size:13px; }
+
+  /* JOIN CTA */
+  .join-panel{
+    background:radial-gradient(120% 160% at 20% 0%, rgba(0,180,166,0.16), transparent 60%), var(--surface);
+    border:1px solid var(--line); border-radius:28px; padding:70px 56px; text-align:center;
+  }
+  .join-panel h2{ max-width:600px; margin:0 auto 18px; }
+  .join-panel .lede{ margin:0 auto 34px; }
+  .join-actions{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  /* CONTACT */
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+  @media (max-width:860px){ .contact-grid{ grid-template-columns:1fr; } }
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:13px; color:var(--muted); margin-bottom:8px; font-family:var(--mono); }
+  .field input, .field textarea{
+    width:100%; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:13px 14px;
+    color:var(--paper); font-family:var(--body); font-size:14.5px;
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--teal); outline-offset:1px; border-color:transparent; }
+  .contact-links{ display:grid; gap:18px; align-content:start; }
+  .contact-links a{ display:flex; align-items:center; gap:12px; font-size:15px; padding:14px 0; border-bottom:1px solid var(--line); }
+  .contact-links a:hover{ color:var(--teal); }
+
+  footer{ border-top:1px solid var(--line); padding:50px 0 40px; }
+  .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; }
+  .foot-grid .lede{ font-size:14px; max-width:340px; }
+  .foot-links{ display:flex; gap:28px; font-size:13.5px; color:var(--muted); flex-wrap:wrap; }
+  .foot-bottom{ margin-top:40px; padding-top:24px; border-top:1px solid var(--line); display:flex; justify-content:space-between; color:var(--muted-2); font-size:12.5px; flex-wrap:wrap; gap:10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><span class="logo-mark"></span>DxLabs</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#build">What We Build</a>
+      <a href="#products">Products</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#join" class="nav-cta">Join our journey</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <div class="eyebrow">Digital health, built in Africa</div>
+      <h1>Where medicine meets <em>invention.</em></h1>
+      <p class="lede">DxLabs builds technology that sharpens how healthcare professionals learn, decide, and work — starting with the daily habit of clinical reasoning, and building toward the tools that will run tomorrow's health systems.</p>
+      <div class="cta-row">
+        <a href="#products" class="btn btn-primary">Explore our products</a>
+        <a href="#team" class="btn btn-ghost">Meet the team</a>
+      </div>
+    </div>
+    <div class="signature reveal">
+      <svg viewBox="0 0 400 380" preserveAspectRatio="xMidYMid meet">
+        <!-- tile grid dissolving into a pulse -->
+        <g id="tiles"></g>
+        <path class="pulse-line" d="M20,300 L110,300 L135,220 L165,340 L195,150 L225,300 L400,300" />
+        <circle class="pulse-dot" cx="225" cy="150" r="5" />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="about-cols">
+      <div class="reveal">
+        <div class="eyebrow">Why DxLabs</div>
+        <h2>Healthcare's hardest gap isn't knowledge. It's the space between knowing and doing.</h2>
+      </div>
+      <div class="reveal">
+        <p>Every health system runs on the judgment of the people inside it — and that judgment is built slowly, unevenly, and often without enough support. Medical graduates leave school knowing the textbook and still spend years learning the instinct. Clinicians everywhere are asked to reason faster, under more pressure, with no support.</p>
+        <p>We started DxLabs because we lived that gap ourselves. Africa's health systems carry an outsized share of the world's disease burden with a fraction of its training infrastructure — which makes this the place to build tools that have to work well, not just look good. If we can make better clinical thinking a daily habit here, we can do it anywhere.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="mv-grid reveal">
+      <div class="mv-card">
+        <div class="eyebrow">Mission</div>
+        <p>To build digital health products that empower healthcare professionals through better learning, smarter workflows, and accessible technology.</p>
+      </div>
+      <div class="mv-card">
+        <div class="eyebrow">Vision</div>
+        <p>To become Africa's leading digital health innovation company — creating products that improve healthcare education, clinical practice, and patient outcomes worldwide.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="build">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">What we build</div>
+      <h2>One discipline, several fronts.</h2>
+      <p class="lede">Medicine, education, design, innovation, and AI, applied to the same problem: helping people make better clinical decisions.</p>
+    </div>
+    <div class="card-grid reveal">
+      <div class="build-card"><div class="icon">📚</div><h3>Medical Education</h3><p>Interactive learning experiences that build real diagnostic instinct, not just recall.</p></div>
+      <div class="build-card"><div class="icon">🧠</div><h3>Clinical Decision Support</h3><p>Tools that sharpen diagnostic reasoning in the moments that matter most.</p></div>
+      <div class="build-card"><div class="icon">🤖</div><h3>Artificial Intelligence</h3><p>AI-powered systems that support clinicians without replacing their judgment.</p></div>
+      <div class="build-card"><div class="icon">📱</div><h3>Digital Health</h3><p>Technology that makes healthcare delivery more accessible, wherever it's needed.</p></div>
+      <div class="build-card"><div class="icon">📊</div><h3>Clinical Productivity</h3><p>Software that gives healthcare professionals their time back.</p></div>
+      <div class="build-card"><div class="icon">🔬</div><h3>Future Innovation</h3><p>An open mandate to solve the next meaningful problem in healthcare.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="products">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Our products</div>
+      <h2>Wardle is chapter one.</h2>
+      <p class="lede">Our flagship product, built to prove a simple idea: clinical reasoning gets stronger when it's practiced daily, not just studied occasionally.</p>
+    </div>
+    <div class="product-panel reveal">
+      <div>
+        <div class="badge">● Presented at MedEd Africa 2026</div>
+        <h3>Wardle — Diagnose. Learn. Win.</h3>
+        <p class="desc">A daily clinical reasoning game for medical students and junior doctors. One new case a day, six guesses, clues that unlock with every attempt — and a breakdown at the end that makes even a wrong answer worth something.</p>
+        <ul class="feature-list">
+          <li>A new clinical case every day, six attempts to reach it</li>
+          <li>Progressive clues that mirror real diagnostic work-up</li>
+          <li>A shareable scorecard, built for the group chat</li>
+          <li>A post-game teaching breakdown on every case</li>
+        </ul>
+        <div class="cta-row">
+          <a href="https://wardle.it.com" class="btn btn-primary">Learn more about Wardle</a>
+        </div>
+      </div>
+      <div class="score-mock">
+        <div class="title"><span>WARDLE CASE #14</span><span>3/6</span></div>
+        <div class="grid5">
+          <div class="tile-cell miss"></div><div class="tile-cell miss"></div><div class="tile-cell win"></div>
+          <div class="tile-cell"></div><div class="tile-cell"></div><div class="tile-cell"></div>
+        </div>
+        <div class="caption">wardle.it.com</div>
+      </div>
+    </div>
+    <div class="demo-video reveal">
+      <!-- Replace this placeholder with: <video controls poster="/path/to/poster.jpg"><source src="/path/to/demo.mp4" type="video/mp4"></video> -->
+      <div class="ph"><div class="play">▶</div>Wardle demo video<br>drop your .mp4 in here</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Milestone</div>
+      <h2>MedEd Africa 2026</h2>
+      <p class="lede">Our first public product presentation — Wardle's beta pilot data, in front of the medical education community, in Addis Ababa.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="t-item done"><div class="t-label">Done</div><h3>Company founded</h3><p>DxLabs is established to build digital health tools beyond a single product.</p></div>
+      <div class="t-item done"><div class="t-label">Done</div><h3>Wardle MVP</h3><p>The first version of the daily diagnostic game ships to early testers.</p></div>
+      <div class="t-item done"><div class="t-label">Done</div><h3>Beta pilot</h3><p>A four-week feasibility pilot with 85 medical trainees across Kenya.</p></div>
+      <div class="t-item done"><div class="t-label">Done</div><h3>MedEd Africa 2026</h3><p>DxLabs presents Wardle's pilot data at the region's medical education conference in Addis Ababa.</p></div>
+      <div class="t-item"><div class="t-label">Next</div><h3>Public launch</h3><p>Wardle opens beyond the pilot cohort.</p></div>
+      <div class="t-item"><div class="t-label">Next</div><h3>University partnerships</h3><p>Free pilot cohorts with medical schools, building toward institutional licensing.</p></div>
+      <div class="t-item"><div class="t-label">Next</div><h3>New products</h3><p>The next front in clinical decision support and AI-assisted learning.</p></div>
+    </div>
+    <div class="conf-photos reveal">
+      <div class="photo-ph">Presentation photo</div>
+      <div class="photo-ph">Demo photo</div>
+      <div class="photo-ph">Conference booth</div>
+      <div class="photo-ph">Audience engagement</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="team">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Meet the founders</div>
+      <h2>Built by people who lived the gap.</h2>
+    </div>
+    <div class="founder-grid reveal">
+      <div class="founder-card">
+        <div class="avatar"><!-- swap for <img src="faith.jpg" alt="Dr. Faith Keru"> -->Photo placeholder</div>
+        <h3>Dr. Faith Keru</h3>
+        <span class="role">Co-Founder & CEO</span>
+        <p>A medical doctor with hands-on experience in clinical training gaps across Kenya's health system. Leads product vision and the case behind Wardle's habit-forming design.</p>
+        <div class="founder-links"><a href="#">LinkedIn</a><a href="#">Email</a></div>
+      </div>
+      <div class="founder-card">
+        <div class="avatar"><!-- swap for <img src="gideon.jpg" alt="Dr. Gideon Saning'o"> -->Photo placeholder</div>
+        <h3>Dr. Gideon Saning'o</h3>
+        <span class="role">Co-Founder & CTO</span>
+        <p>Builds the technology behind DxLabs' products, from the daily game mechanic to the infrastructure that will carry the next generation of clinical tools.</p>
+        <div class="founder-links"><a href="#">LinkedIn</a><a href="#">Email</a></div>
+      </div>
+    </div>
+    <p class="founder-note reveal">We started DxLabs because the gap between graduating and being ready is real, and we'd rather close it than write another paper about it. Wardle was the first, smallest version of that idea — the rest of DxLabs is what happens when it works.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Why DxLabs</div>
+      <h2>What we bring to the table.</h2>
+    </div>
+    <div class="why-grid reveal">
+      <div class="why-cell"><div class="num">01</div><h3>Designed for healthcare</h3></div>
+      <div class="why-cell"><div class="num">02</div><h3>Built in Africa, for the world</h3></div>
+      <div class="why-cell"><div class="num">03</div><h3>Evidence before hype</h3></div>
+      <div class="why-cell"><div class="num">04</div><h3>Modern engineering</h3></div>
+      <div class="why-cell"><div class="num">05</div><h3>Clinicians in the room</h3></div>
+      <div class="why-cell"><div class="num">06</div><h3>Built to scale</h3></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Looking ahead</div>
+      <h2>Wardle is the wedge, not the ceiling.</h2>
+    </div>
+    <div class="flow reveal">
+      <div class="flow-item current">Today — Wardle</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">Clinical learning ecosystem</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">AI-powered healthcare tools</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">Hospital & health-system software</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">Healthcare data products</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">A global digital health company</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="join">
+  <div class="wrap">
+    <div class="join-panel reveal">
+      <div class="eyebrow" style="justify-content:center;">Join our journey</div>
+      <h2>We're looking for people who'd rather build the fix than wait for it.</h2>
+      <p class="lede">Partner with us. Invest in what's next. Or join the team building it.</p>
+      <div class="join-actions">
+        <a href="#contact" class="btn btn-primary">Partner with us</a>
+        <a href="#contact" class="btn btn-ghost">Join the waitlist</a>
+        <a href="#contact" class="btn btn-ghost">Join our team</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Contact</div>
+      <h2>Let's talk.</h2>
+    </div>
+    <div class="contact-grid reveal">
+      <form onsubmit="return false;">
+        <div class="field"><label>Name</label><input type="text" placeholder="Your name"></div>
+        <div class="field"><label>Email</label><input type="email" placeholder="you@domain.com"></div>
+        <div class="field"><label>Message</label><textarea rows="4" placeholder="Tell us what you're working on"></textarea></div>
+        <button class="btn btn-primary" type="submit">Send message</button>
+      </form>
+      <div class="contact-links">
+        <a href="mailto:dxlabss@gmail.com">✉ dxlabss@gmail.com</a>
+        <a href="#">in LinkedIn — DxLabs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo" style="margin-bottom:10px;"><span class="logo-mark"></span>DxLabs</div>
+        <p class="lede">Building digital health products that empower healthcare professionals through better learning, smarter workflows, and accessible technology.</p>
+      </div>
+      <div class="foot-links">
+        <a href="#about">About</a>
+        <a href="#build">What We Build</a>
+        <a href="#products">Products</a>
+        <a href="#team">Team</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 DxLabs. All rights reserved.</span>
+      <span>dxlabss@gmail.com · Home of Wardle — wardle.it.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12 });
+  els.forEach(el=>io.observe(el));
+
+  // Build tile grid for hero signature, animate a diagonal wave of tiles lighting up
+  const NS = "http://www.w3.org/2000/svg";
+  const tilesG = document.getElementById('tiles');
+  const cols = 6, rows = 3, size = 46, gap = 8, offsetX = 20, offsetY = 40;
+  let idx = 0;
+  const cells = [];
+  for(let r=0; r<rows; r++){
+    for(let c=0; c<cols; c++){
+      const rect = document.createElementNS(NS, 'rect');
+      const x = offsetX + c*(size+gap);
+      const y = offsetY + r*(size+gap);
+      rect.setAttribute('x', x);
+      rect.setAttribute('y', y);
+      rect.setAttribute('width', size);
+      rect.setAttribute('height', size);
+      rect.setAttribute('rx', 8);
+      rect.setAttribute('class', 'tile');
+      tilesG.appendChild(rect);
+      cells.push(rect);
+    }
+  }
+  function wave(){
+    cells.forEach((cell, i)=>{
+      const delay = (i % cols) * 90 + Math.floor(i/cols) * 60;
+      setTimeout(()=>{
+        cell.classList.add('on');
+        setTimeout(()=> cell.classList.remove('on'), 900);
+      }, delay);
+    });
+  }
+  wave();
+  setInterval(wave, 3600);
+</script>
+
+</body>
+</html>
