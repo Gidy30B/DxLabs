@@ -1043,6 +1043,7 @@ footer .brand { color: #fff; }
   .wardle-showcase-v19 {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     min-height: 0;
     padding: 20px;
     gap: 0;
@@ -1110,14 +1111,16 @@ footer .brand { color: #fff; }
   }
   .wardle-screenshot-panel-v19 {
     order: 4;
-    width: auto;
+    width: calc(100% + 40px);
+    max-width: none;
+    min-width: 0;
     margin: 18px -20px 0;
     padding: 2px 20px 8px;
   }
   .wardle-swipe-track-v22 {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(0, calc(100% - 30px));
+    grid-auto-columns: minmax(0, calc((100% - 40px) - 30px));
     gap: 14px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1133,6 +1136,7 @@ footer .brand { color: #fff; }
     display: grid;
     gap: 13px;
     align-content: start;
+    width: 100%;
     scroll-snap-align: start;
     min-width: 0;
   }
