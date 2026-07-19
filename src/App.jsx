@@ -9,13 +9,6 @@ const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
 const whatsappNumber = (import.meta.env.VITE_DXLABS_WHATSAPP_NUMBER || '').replace(/\D/g, '');
 const defaultWhatsappMessage = 'Hello DxLabs, I would like to discuss a possible collaboration.';
 
-function gmailComposeUrl({ subject = '', body = '' } = {}) {
-  const params = [`view=cm`, `fs=1`, `to=${encodeURIComponent(contactEmail)}`];
-  if (subject) params.push(`su=${encodeURIComponent(subject)}`);
-  if (body) params.push(`body=${encodeURIComponent(body)}`);
-  return `https://mail.google.com/mail/?${params.join('&')}`;
-}
-
 function mailtoUrl({ subject = '', body = '' } = {}) {
   const params = [];
   if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
@@ -28,27 +21,6 @@ function whatsappUrl(message = defaultWhatsappMessage) {
   if (!whatsappNumber) return '';
 
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-}
-
-function buildEnquiry(form) {
-  if (!form.reportValidity()) {
-    return null;
-  }
-
-  const data = new FormData(form);
-  const name = String(data.get('name') || '').trim();
-  const email = String(data.get('email') || '').trim();
-  const organisation = String(data.get('organisation') || '').trim() || 'Not provided';
-  const message = String(data.get('message') || '').trim();
-
-  return {
-    subject: `DxLabs enquiry from ${name}`,
-    body:
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Organisation: ${organisation}\n\n` +
-      `Message:\n${message}`,
-  };
 }
 
 function getContactChannels() {
@@ -507,87 +479,59 @@ function Leadership() {
 }
 
 function Contact() {
-  const [deliveryChoiceOpen, setDeliveryChoiceOpen] = useState(false);
-  const [pendingEnquiry, setPendingEnquiry] = useState(null);
-  const deliveryChoiceRef = useRef(null);
-  const sendButtonRef = useRef(null);
-  const firstDeliveryActionRef = useRef(null);
+  const [submitState, setSubmitState] = useState('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [formStartedAt, setFormStartedAt] = useState(() => Date.now());
+  const formRef = useRef(null);
+  const statusRef = useRef(null);
+  const isSubmitting = submitState === 'submitting';
 
-  function closeDeliveryChoice({ restoreFocus = true } = {}) {
-    setDeliveryChoiceOpen(false);
-    setPendingEnquiry(null);
-    if (restoreFocus) {
-      window.requestAnimationFrame(() => sendButtonRef.current?.focus());
-    }
-  }
-
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    const enquiry = buildEnquiry(event.currentTarget);
-
-    if (!enquiry) return;
-
-    setPendingEnquiry(enquiry);
-    setDeliveryChoiceOpen(true);
-  }
-
-  function handleOpenGmail() {
-    if (!pendingEnquiry) return;
-
-    const composeUrl = gmailComposeUrl(pendingEnquiry);
-    const newWindow = window.open('', '_blank');
-
-    closeDeliveryChoice({ restoreFocus: false });
-
-    if (!newWindow) {
-      window.location.assign(composeUrl);
+    if (isSubmitting) return;
+    if (!event.currentTarget.reportValidity()) {
       return;
     }
 
-    newWindow.opener = null;
-    newWindow.location.href = composeUrl;
-  }
-
-  function handleOpenEmailApp() {
-    if (!pendingEnquiry) return;
-
-    const emailUrl = mailtoUrl(pendingEnquiry);
-
-    closeDeliveryChoice({ restoreFocus: false });
-    window.location.assign(emailUrl);
-  }
-
-  function handleFormChange() {
-    if (deliveryChoiceOpen) {
-      closeDeliveryChoice({ restoreFocus: false });
-    }
-  }
-
-  useEffect(() => {
-    if (!deliveryChoiceOpen) return undefined;
-
-    firstDeliveryActionRef.current?.focus();
-
-    function handlePointerDown(event) {
-      if (deliveryChoiceRef.current && !deliveryChoiceRef.current.contains(event.target)) {
-        closeDeliveryChoice();
-      }
-    }
-
-    function handleKeyDown(event) {
-      if (event.key === 'Escape') {
-        closeDeliveryChoice();
-      }
-    }
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      name: data.get('name'),
+      email: data.get('email'),
+      organisation: data.get('organisation'),
+      message: data.get('message'),
+      website: data.get('website'),
+      startedAt: formStartedAt,
+      source: 'dxlabs-website',
     };
-  }, [deliveryChoiceOpen]);
+
+    setSubmitState('submitting');
+    setStatusMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok || result.ok !== true) {
+        setSubmitState('error');
+        setStatusMessage('We could not send your enquiry. Please try again or use one of the direct contact options.');
+        return;
+      }
+
+      form.reset();
+      setFormStartedAt(Date.now());
+      setSubmitState('success');
+      setStatusMessage(result.message || 'Thank you. Your enquiry has been sent to DxLabs.');
+      window.requestAnimationFrame(() => statusRef.current?.focus());
+    } catch {
+      setSubmitState('error');
+      setStatusMessage('We could not send your enquiry. Please try again or use one of the direct contact options.');
+    }
+  }
 
   return (
     <section className="contact-v5" id="contact">
@@ -609,7 +553,7 @@ function Contact() {
             </div>
             <p className="contact-support-v15">Use the form to provide enough context for a focused response.</p>
           </div>
-          <form className="contact-form-v5 reveal" onChange={handleFormChange} onSubmit={handleSubmit}>
+          <form aria-busy={isSubmitting} className="contact-form-v5 reveal" onSubmit={handleSubmit} ref={formRef}>
             <div className="contact-form-head-v13">
               <span className="contact-form-icon-v13">
                 <ContactIcon type="send" />
@@ -622,92 +566,60 @@ function Contact() {
             <div className="form-row-v5">
               <div className="field">
                 <label htmlFor="name">Name</label>
-                <input autoComplete="name" id="name" name="name" required />
+                <input autoComplete="name" id="name" maxLength="100" minLength="2" name="name" required />
               </div>
               <div className="field">
                 <label htmlFor="email">Email</label>
-                <input autoComplete="email" id="email" name="email" required type="email" />
+                <input autoComplete="email" id="email" maxLength="254" name="email" required type="email" />
               </div>
             </div>
             <div className="field">
               <label htmlFor="organisation">
                 Organisation <em>optional</em>
               </label>
-              <input autoComplete="organization" id="organisation" name="organisation" />
+              <input autoComplete="organization" id="organisation" maxLength="150" name="organisation" />
             </div>
             <div className="field">
               <label htmlFor="message">Message</label>
               <textarea
                 id="message"
+                maxLength="5000"
+                minLength="10"
                 name="message"
                 placeholder="Describe the opportunity, project or question you would like to discuss."
                 required
               />
             </div>
+            <div aria-hidden="true" className="contact-honeypot-v17">
+              <label htmlFor="website">Website</label>
+              <input autoComplete="off" id="website" name="website" tabIndex="-1" />
+            </div>
             <div className="contact-submit-area-v16">
               <div className="contact-submit-row-v16">
                 <button
-                  aria-controls="contact-delivery-options"
-                  aria-expanded={deliveryChoiceOpen}
                   className="button button-primary contact-submit-v5"
-                  ref={sendButtonRef}
+                  disabled={isSubmitting}
                   type="submit"
                 >
                   <ContactIcon type="send" />
-                  Send enquiry
+                  {isSubmitting ? 'Sending...' : 'Send enquiry'}
                   <span aria-hidden="true">→</span>
                 </button>
               </div>
-              {deliveryChoiceOpen && pendingEnquiry && (
-                <div
-                  aria-label="Choose how to open your enquiry"
-                  className="contact-delivery-choice-v16"
-                  id="contact-delivery-options"
-                  ref={deliveryChoiceRef}
+              {statusMessage && (
+                <p
+                  aria-live={submitState === 'error' ? 'assertive' : 'polite'}
+                  className={`contact-status-v17 ${submitState}`}
+                  ref={statusRef}
+                  role={submitState === 'error' ? 'alert' : 'status'}
+                  tabIndex="-1"
                 >
-                  <div className="contact-delivery-head-v16">
-                    <strong>Choose email option</strong>
-                    <button
-                      aria-label="Close email options"
-                      className="contact-delivery-close-v16"
-                      onClick={() => closeDeliveryChoice()}
-                      type="button"
-                    >
-                      <ContactIcon type="close" />
-                    </button>
-                  </div>
-                  <button
-                    className="contact-delivery-option-v16"
-                    onClick={handleOpenGmail}
-                    ref={firstDeliveryActionRef}
-                    type="button"
-                  >
-                    <span className="contact-delivery-icon-v16">
-                      <ContactIcon type="send" />
-                    </span>
-                    <span>
-                      <strong>Open in Gmail</strong>
-                      <small>Continue in Gmail using your browser</small>
-                    </span>
-                    <span aria-hidden="true">↗</span>
-                  </button>
-                  <button className="contact-delivery-option-v16" onClick={handleOpenEmailApp} type="button">
-                    <span className="contact-delivery-icon-v16">
-                      <ContactIcon type="email" />
-                    </span>
-                    <span>
-                      <strong>Use email app</strong>
-                      <small>Requires a default mail application</small>
-                    </span>
-                    <span aria-hidden="true">→</span>
-                  </button>
-                  <p className="contact-delivery-note-v16">Your enquiry will open as a draft for review.</p>
-                </div>
+                  {statusMessage}
+                </p>
               )}
             </div>
             <p className="form-note-v5">
-              Choose Gmail or your device's email application after preparing the enquiry. Nothing is sent
-              automatically.
+              Your enquiry is sent securely through the DxLabs website. Direct contact options remain available.
             </p>
           </form>
         </div>
