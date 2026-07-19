@@ -71,6 +71,17 @@ p { margin: 0; }
   transition: .2s;
 }
 .skip-link:focus { transform: none; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 .site-header {
   position: sticky;
@@ -203,6 +214,18 @@ p { margin: 0; }
   letter-spacing: .12em;
   text-transform: uppercase;
 }
+.wardle-journey-statement-v22 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -2px 0 14px;
+  color: #667085;
+  font-size: .72rem;
+  font-weight: 850;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.wardle-journey-statement-v22 span { color: var(--forest-2); }
 .wardle-showcase-caption-v19 strong { display: block; color: var(--ink); font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1.14; letter-spacing: -.035em; }
 .wardle-showcase-caption-v19 p { margin-top: 10px; color: var(--body); font-size: .93rem; line-height: 1.5; }
 .wardle-view-tabs-v19 {
@@ -243,6 +266,13 @@ p { margin: 0; }
   grid-row: 1 / span 2;
   justify-self: center;
   width: min(100%, 290px);
+}
+.wardle-swipe-track-v22 { overflow: hidden; }
+.wardle-swipe-slide-v22 { display: none; }
+.wardle-swipe-slide-v22.active { display: block; }
+.wardle-slide-caption-v22,
+.wardle-carousel-status-v22 {
+  display: none;
 }
 .wardle-phone-frame-v19 {
   margin: 0;
@@ -1025,10 +1055,16 @@ footer .brand { color: #fff; }
   }
   .wardle-showcase-head-v19 span {
     order: 1;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+  }
+  .wardle-journey-statement-v22 {
+    order: 2;
+    margin: 0 0 14px;
+    font-size: .65rem;
+    line-height: 1.45;
   }
   .wardle-view-tabs-v19 {
-    order: 2;
+    order: 3;
     display: flex;
     gap: 22px;
     overflow-x: auto;
@@ -1070,23 +1106,35 @@ footer .brand { color: #fff; }
     font-weight: 900;
   }
   .wardle-showcase-caption-v19 {
-    order: 3;
-    margin-top: 22px;
-    max-width: 31rem;
-  }
-  .wardle-showcase-caption-v19 strong {
-    font-size: clamp(1.1rem, 5vw, 1.25rem);
-    line-height: 1.2;
-  }
-  .wardle-showcase-caption-v19 p {
-    margin-top: 8px;
-    font-size: .92rem;
-    line-height: 1.55;
+    display: none;
   }
   .wardle-screenshot-panel-v19 {
     order: 4;
-    width: min(88vw, 320px);
-    margin: 22px auto 0;
+    width: auto;
+    margin: 18px -20px 0;
+    padding: 2px 20px 8px;
+  }
+  .wardle-swipe-track-v22 {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, calc(100% - 30px));
+    gap: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-padding-inline: 20px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .wardle-swipe-track-v22::-webkit-scrollbar { display: none; }
+  .wardle-swipe-slide-v22,
+  .wardle-swipe-slide-v22.active {
+    display: grid;
+    gap: 13px;
+    align-content: start;
+    scroll-snap-align: start;
+    min-width: 0;
   }
   .wardle-phone-frame-v19 {
     padding: 0;
@@ -1101,6 +1149,73 @@ footer .brand { color: #fff; }
     border-radius: 17px;
     object-fit: contain;
     object-position: center top;
+  }
+  .wardle-slide-caption-v22 {
+    display: block;
+    min-height: 126px;
+    padding: 14px 2px 0;
+  }
+  .wardle-slide-caption-v22 span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--forest-2);
+    font-size: .66rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .wardle-slide-caption-v22 strong {
+    display: block;
+    color: var(--ink);
+    font-size: clamp(1.05rem, 5vw, 1.2rem);
+    line-height: 1.2;
+    letter-spacing: -.03em;
+  }
+  .wardle-slide-caption-v22 p {
+    margin-top: 7px;
+    color: var(--body);
+    font-size: .9rem;
+    line-height: 1.5;
+  }
+  .wardle-carousel-status-v22 {
+    order: 5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 24px;
+    margin-top: 12px;
+    color: #667085;
+    font-size: .76rem;
+    font-weight: 850;
+  }
+  .wardle-carousel-count-v22 {
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .wardle-carousel-dots-v22 {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wardle-carousel-dots-v22 i {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #cbd7e5;
+    transition: width .18s ease, background .18s ease;
+  }
+  .wardle-carousel-dots-v22 i.active {
+    width: 18px;
+    background: var(--forest);
+  }
+  .wardle-swipe-hint-v22 {
+    margin-left: auto;
+    color: #7a889b;
+    transition: opacity .18s ease;
+    white-space: nowrap;
+  }
+  .wardle-swipe-hint-v22.hidden {
+    opacity: 0;
   }
   .event-gallery-v7 { min-height: auto; padding: 16px; }
   .event-social-head { margin-bottom: 12px; }
@@ -1150,4 +1265,8 @@ footer .brand { color: #fff; }
     transition: none;
   }
   .wardle-phone-frame-v19 img { animation: none; }
+  .wardle-carousel-dots-v22 i,
+  .wardle-swipe-hint-v22 {
+    transition: none;
+  }
 }

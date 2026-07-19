@@ -370,6 +370,9 @@ function About() {
 
 function Wardle({ onDemo }) {
   const [activeView, setActiveView] = useState(0);
+  const [hasExploredShowcase, setHasExploredShowcase] = useState(false);
+  const trackRef = useRef(null);
+  const slideRefs = useRef([]);
   const views = [
     {
       label: 'Play',
@@ -401,22 +404,46 @@ function Wardle({ onDemo }) {
     },
   ];
   const active = views[activeView];
+  const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
+
+  function prefersReducedMotion() {
+    return window.matchMedia?.(reducedMotionQuery).matches;
+  }
+
+  function formattedStep(index) {
+    return String(index + 1).padStart(2, '0');
+  }
+
+  function markShowcaseExplored() {
+    setHasExploredShowcase((current) => (current ? current : true));
+  }
 
   function scrollSelectedTabIntoView(index) {
     window.requestAnimationFrame(() => {
       const selectedTab = document.getElementById(`wardle-view-tab-${index}`);
-      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
       selectedTab?.scrollIntoView({
-        behavior: reduceMotion ? 'auto' : 'smooth',
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
         block: 'nearest',
         inline: 'nearest',
       });
     });
   }
 
+  function scrollSlideIntoView(index) {
+    window.requestAnimationFrame(() => {
+      slideRefs.current[index]?.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        block: 'nearest',
+        inline: 'start',
+      });
+    });
+  }
+
   function selectView(index) {
+    markShowcaseExplored();
     setActiveView(index);
+    scrollSlideIntoView(index);
     scrollSelectedTabIntoView(index);
   }
 
@@ -437,12 +464,81 @@ function Wardle({ onDemo }) {
       nextIndex = lastIndex;
     }
 
+    markShowcaseExplored();
     setActiveView(nextIndex);
+    scrollSlideIntoView(nextIndex);
     window.requestAnimationFrame(() => {
       document.getElementById(`wardle-view-tab-${nextIndex}`)?.focus();
       scrollSelectedTabIntoView(nextIndex);
     });
   }
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const slides = slideRefs.current.filter(Boolean);
+
+    if (!track || slides.length === 0) return undefined;
+
+    if (!('IntersectionObserver' in window)) {
+      let frameId = 0;
+
+      function updateFromScroll() {
+        frameId = 0;
+        const trackRect = track.getBoundingClientRect();
+        const trackStart = trackRect.left;
+        const nextIndex = slides.reduce(
+          (closest, slide, index) => {
+            const distance = Math.abs(slide.getBoundingClientRect().left - trackStart);
+            return distance < closest.distance ? { index, distance } : closest;
+          },
+          { index: 0, distance: Number.POSITIVE_INFINITY }
+        ).index;
+
+        setActiveView((current) => {
+          if (current === nextIndex) return current;
+          scrollSelectedTabIntoView(nextIndex);
+          return nextIndex;
+        });
+      }
+
+      function handleScrollFallback() {
+        if (frameId) return;
+        frameId = window.requestAnimationFrame(updateFromScroll);
+      }
+
+      track.addEventListener('scroll', handleScrollFallback, { passive: true });
+      return () => {
+        if (frameId) window.cancelAnimationFrame(frameId);
+        track.removeEventListener('scroll', handleScrollFallback);
+      };
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const winningEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (!winningEntry) return;
+
+        const nextIndex = Number(winningEntry.target.dataset.wardleSlide);
+        if (!Number.isInteger(nextIndex)) return;
+
+        setActiveView((current) => {
+          if (current === nextIndex) return current;
+          scrollSelectedTabIntoView(nextIndex);
+          return nextIndex;
+        });
+      },
+      {
+        root: track,
+        threshold: [0.55, 0.7, 0.85, 0.95],
+      }
+    );
+
+    slides.forEach((slide) => observer.observe(slide));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="section wardle-v5" id="wardle">
@@ -468,6 +564,9 @@ function Wardle({ onDemo }) {
         <div className="demo-card-v5 wardle-showcase-v19 reveal">
           <div className="wardle-showcase-head-v19">
             <span>Inside Wardle</span>
+            <div className="wardle-journey-statement-v22" aria-hidden="true">
+              Practice <span>→</span> Understand <span>→</span> Retain <span>→</span> Return
+            </div>
             <div className="wardle-showcase-caption-v19">
               <strong>{active.title}</strong>
               <p>{active.description}</p>
@@ -481,7 +580,7 @@ function Wardle({ onDemo }) {
           >
             {views.map((view, index) => (
               <button
-                aria-controls="wardle-view-panel"
+                aria-controls={`wardle-view-panel-${index}`}
                 aria-selected={activeView === index}
                 className={activeView === index ? 'active' : ''}
                 id={`wardle-view-tab-${index}`}
@@ -496,23 +595,57 @@ function Wardle({ onDemo }) {
             ))}
           </div>
           <div
-            aria-labelledby={`wardle-view-tab-${activeView}`}
-            className="wardle-screenshot-panel-v19"
-            id="wardle-view-panel"
-            role="tabpanel"
+            className="wardle-screenshot-panel-v19 wardle-swipe-track-v22"
+            onScroll={markShowcaseExplored}
+            ref={trackRef}
           >
-            <figure className="wardle-phone-frame-v19">
-              <img
-                alt={active.alt}
-                decoding="async"
-                height="1438"
-                key={active.label}
-                loading={activeView === 0 ? 'eager' : 'lazy'}
-                src={active.image}
-                width="720"
-              />
-            </figure>
+            {views.map((view, index) => (
+              <article
+                aria-hidden={activeView === index ? undefined : 'true'}
+                aria-labelledby={`wardle-view-tab-${index}`}
+                className={`wardle-swipe-slide-v22${activeView === index ? ' active' : ''}`}
+                data-wardle-slide={index}
+                id={`wardle-view-panel-${index}`}
+                key={view.label}
+                ref={(element) => {
+                  slideRefs.current[index] = element;
+                }}
+                role="tabpanel"
+              >
+                <figure className="wardle-phone-frame-v19">
+                  <img
+                    alt={view.alt}
+                    decoding="async"
+                    height="1438"
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    src={view.image}
+                    width="720"
+                  />
+                </figure>
+                <div className="wardle-slide-caption-v22">
+                  <span>
+                    {formattedStep(index)} · {view.label}
+                  </span>
+                  <strong>{view.title}</strong>
+                  <p>{view.description}</p>
+                </div>
+              </article>
+            ))}
           </div>
+          <div className="wardle-carousel-status-v22">
+            <span className="wardle-carousel-count-v22">
+              {activeView + 1} / {views.length}
+            </span>
+            <span aria-hidden="true" className="wardle-carousel-dots-v22">
+              {views.map((view, index) => (
+                <i className={activeView === index ? 'active' : ''} key={`${view.label}-dot`} />
+              ))}
+            </span>
+            <span className={`wardle-swipe-hint-v22${hasExploredShowcase ? ' hidden' : ''}`}>Swipe to explore</span>
+          </div>
+          <p aria-live="polite" className="sr-only">
+            Showing {activeView + 1} of {views.length}: {active.label}
+          </p>
         </div>
       </div>
     </section>
