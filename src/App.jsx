@@ -506,15 +506,15 @@ function Focus() {
     ],
     [
       '02',
-      'Health systems',
-      'Investigation of tools that could improve clinical workflows, information flow and essential service delivery across care settings.',
-      'Future product direction',
-    ],
-    [
-      '03',
       'Diagnostic innovation',
       'Responsible investigation of technologies that support the interpretation and use of clinical information without replacing professional judgement.',
       'Research and development',
+    ],
+    [
+      '03',
+      'Health systems',
+      'Investigation of tools that could improve clinical workflows, information flow and essential service delivery across care settings.',
+      'Future product direction',
     ],
     [
       '04',
