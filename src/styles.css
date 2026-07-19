@@ -972,13 +972,40 @@ footer .brand { color: #fff; }
     line-height: 1.2;
   }
   .evidence-item-v18 dd { font-size: .82rem; line-height: 1.42; }
-  .beta-findings-head-v20 { gap: 16px; }
-  .beta-metrics-v20 { grid-template-columns: 1fr; border-radius: 16px; }
-  .beta-metric-v20 { min-height: 0; padding: 18px 20px; }
-  .beta-retention-v20 { padding: 18px; border-radius: 16px; }
-  .beta-retention-row-v20 { grid-template-columns: 64px 1fr; gap: 10px; }
-  .beta-retention-row-v20 dd { grid-template-columns: 45px 1fr; gap: 9px; }
-  .beta-limitations-v20 { padding: 16px; border-radius: 14px; }
+  .beta-findings-v20 { padding: 60px 0; }
+  .beta-findings-shell-v20 { gap: 22px; }
+  .beta-findings-head-v20 { gap: 14px; }
+  .beta-findings-head-v20 h2 { font-size: clamp(1.65rem, 7vw, 2.15rem); }
+  .beta-findings-head-v20 p { font-size: .94rem; line-height: 1.55; }
+  .beta-findings-body-v20 { gap: 16px; }
+  .beta-metrics-v20 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .beta-metric-v20 {
+    min-height: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--white);
+  }
+  .beta-metric-v20:last-child { grid-column: 1 / -1; }
+  .beta-metric-v20 dt {
+    margin-bottom: 8px;
+    font-size: clamp(1.28rem, 6vw, 1.62rem);
+  }
+  .beta-metric-v20 dd { font-size: .8rem; line-height: 1.38; }
+  .beta-retention-v20 { padding: 17px; border-radius: 15px; }
+  .beta-retention-v20 h3 { margin-bottom: 14px; font-size: .96rem; }
+  .beta-retention-v20 dl { gap: 12px; }
+  .beta-retention-row-v20 { grid-template-columns: 58px 1fr; gap: 10px; }
+  .beta-retention-row-v20 dd { grid-template-columns: 42px 1fr; gap: 8px; }
+  .beta-retention-row-v20 i { height: 7px; }
+  .beta-limitations-v20 { padding: 15px; border-radius: 14px; font-size: .82rem; line-height: 1.5; }
   .signal-panel { min-height: 270px; border-radius: 18px; }
   .signal-content { padding: 20px; }
   .signal-foot span:last-child { display: none; }
@@ -1106,6 +1133,10 @@ footer .brand { color: #fff; }
 
 @media (max-width: 339px) {
   .evidence-grid-v18 { grid-template-columns: 1fr; }
+  .beta-metrics-v20 { grid-template-columns: 1fr; }
+  .beta-metric-v20:last-child { grid-column: auto; }
+  .beta-retention-row-v20 { grid-template-columns: 1fr; gap: 4px; }
+  .beta-retention-row-v20 dd { grid-template-columns: 40px 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
