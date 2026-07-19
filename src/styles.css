@@ -215,21 +215,26 @@ p { margin: 0; }
   align-items: center;
   min-height: 46px;
   padding: 10px 13px;
-  border: 1px solid rgba(219, 230, 242, .96);
+  border: 1px solid transparent;
   border-radius: 12px;
   color: #56677d;
-  background: rgba(255, 255, 255, .74);
+  background: transparent;
   font-size: .82rem;
   font-weight: 850;
   text-align: left;
 }
-.wardle-view-tabs-v19 button:hover { border-color: rgba(0, 128, 166, .24); color: var(--forest); }
+.wardle-view-tabs-v19 button:hover {
+  border-color: rgba(219, 230, 242, .96);
+  color: var(--forest);
+  background: rgba(255, 255, 255, .52);
+}
 .wardle-view-tabs-v19 button.active,
 .wardle-view-tabs-v19 button[aria-selected="true"] {
-  border-color: rgba(0, 128, 166, .32);
-  color: var(--forest);
-  background: #fff;
-  box-shadow: inset 4px 0 0 var(--forest);
+  border-color: var(--line);
+  color: var(--ink);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+  font-weight: 900;
 }
 .wardle-view-tabs-v19 button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .wardle-screenshot-panel-v19 {
