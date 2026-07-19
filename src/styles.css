@@ -215,17 +215,15 @@ p { margin: 0; }
   text-transform: uppercase;
 }
 .wardle-journey-statement-v22 {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: block;
   margin: -2px 0 14px;
   color: #667085;
-  font-size: .72rem;
-  font-weight: 850;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  font-size: .82rem;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-transform: none;
 }
-.wardle-journey-statement-v22 span { color: var(--forest-2); }
 .wardle-showcase-caption-v19 strong { display: block; color: var(--ink); font-size: clamp(1.25rem, 2vw, 1.75rem); line-height: 1.14; letter-spacing: -.035em; }
 .wardle-showcase-caption-v19 p { margin-top: 10px; color: var(--body); font-size: .93rem; line-height: 1.5; }
 .wardle-view-tabs-v19 {
@@ -253,7 +251,7 @@ p { margin: 0; }
   background: rgba(255, 255, 255, .52);
 }
 .wardle-view-tabs-v19 button.active,
-.wardle-view-tabs-v19 button[aria-selected="true"] {
+.wardle-view-tabs-v19 button[aria-current="true"] {
   border-color: var(--line);
   color: var(--ink);
   background: var(--white);
@@ -264,30 +262,80 @@ p { margin: 0; }
 .wardle-screenshot-panel-v19 {
   grid-column: 2;
   grid-row: 1 / span 2;
-  justify-self: center;
-  width: min(100%, 290px);
+  justify-self: stretch;
+  width: 100%;
 }
-.wardle-swipe-track-v22 { overflow: hidden; }
-.wardle-swipe-slide-v22 { display: none; }
-.wardle-swipe-slide-v22.active { display: block; }
-.wardle-slide-caption-v22,
-.wardle-carousel-status-v22 {
+.wardle-swipe-track-v22 {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 18px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 128, 166, .34) transparent;
+  overscroll-behavior-x: contain;
+}
+.wardle-swipe-track-v22::-webkit-scrollbar { height: 8px; }
+.wardle-swipe-track-v22::-webkit-scrollbar-track { background: transparent; }
+.wardle-swipe-track-v22::-webkit-scrollbar-thumb {
+  background: rgba(0, 128, 166, .28);
+  border-radius: 999px;
+}
+.wardle-swipe-slide-v22,
+.wardle-swipe-slide-v22.active {
+  display: flex;
+  flex: 0 0 208px;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  position: relative;
+  scroll-snap-align: start;
+}
+.wardle-slide-caption-v22 {
+  display: block;
+  min-height: 118px;
+}
+.wardle-slide-caption-v22 span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--forest-2);
+  font-size: .64rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.wardle-slide-caption-v22 strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+}
+.wardle-slide-caption-v22 p {
+  margin-top: 6px;
+  color: var(--body);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+.wardle-caption-toggle-v23 {
   display: none;
 }
 .wardle-phone-frame-v19 {
   margin: 0;
-  padding: 10px;
+  padding: 8px;
   aspect-ratio: 720 / 1438;
   border: 1px solid rgba(16, 35, 63, .13);
-  border-radius: 28px;
+  border-radius: 24px;
   background: #101528;
-  box-shadow: 0 24px 60px rgba(16, 35, 63, .18);
+  box-shadow: 0 18px 42px rgba(16, 35, 63, .14);
   overflow: hidden;
 }
 .wardle-phone-frame-v19 img {
   width: 100%;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 17px;
   object-fit: cover;
   object-position: center top;
   animation: wardle-screenshot-in .16s ease-out both;
@@ -1061,50 +1109,11 @@ footer .brand { color: #fff; }
   .wardle-journey-statement-v22 {
     order: 2;
     margin: 0 0 14px;
-    font-size: .65rem;
+    font-size: .84rem;
     line-height: 1.45;
   }
   .wardle-view-tabs-v19 {
-    order: 3;
-    display: flex;
-    gap: 22px;
-    overflow-x: auto;
-    margin-inline: -20px;
-    padding: 0 20px 3px;
-    border-bottom: 1px solid var(--line);
-    scroll-padding-inline: 20px;
-    scroll-snap-type: x proximity;
-    scrollbar-width: none;
-  }
-  .wardle-view-tabs-v19::-webkit-scrollbar { display: none; }
-  .wardle-view-tabs-v19 button {
-    flex: 0 0 auto;
-    min-width: 0;
-    min-height: 44px;
-    padding: 0 0 10px;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    color: #667085;
-    background: transparent;
-    box-shadow: none;
-    font-size: .88rem;
-    text-align: center;
-    white-space: nowrap;
-    scroll-snap-align: start;
-  }
-  .wardle-view-tabs-v19 button:hover {
-    border-color: transparent;
-    color: var(--forest);
-    background: transparent;
-  }
-  .wardle-view-tabs-v19 button.active,
-  .wardle-view-tabs-v19 button[aria-selected="true"] {
-    border-bottom-color: var(--forest);
-    color: var(--ink);
-    background: transparent;
-    box-shadow: none;
-    font-weight: 900;
+    display: none;
   }
   .wardle-showcase-caption-v19 {
     display: none;
@@ -1114,8 +1123,8 @@ footer .brand { color: #fff; }
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    margin: 18px 0 0;
-    padding: 2px 0 8px;
+    margin: 16px 0 0;
+    padding: 0;
   }
   .wardle-swipe-track-v22 {
     display: flex;
@@ -1123,6 +1132,7 @@ footer .brand { color: #fff; }
     max-width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    padding: 2px 0 18px;
     scroll-padding-inline: 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -1133,38 +1143,50 @@ footer .brand { color: #fff; }
   .wardle-swipe-slide-v22,
   .wardle-swipe-slide-v22.active {
     display: flex;
-    flex: 0 0 calc(100% - 30px);
+    flex: 0 0 100%;
     flex-direction: column;
-    gap: 13px;
-    width: 100%;
-    max-width: calc(100% - 30px);
+    gap: 0;
+    width: auto;
+    max-width: 100%;
+    position: relative;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     min-width: 0;
   }
   .wardle-phone-frame-v19 {
-    padding: 0;
-    aspect-ratio: auto;
-    border-color: var(--line);
-    border-radius: 18px;
-    background: var(--white);
-    box-shadow: var(--shadow-soft);
+    padding: 7px;
+    aspect-ratio: 720 / 1438;
+    border-color: rgba(16, 35, 63, .13);
+    border-radius: 24px;
+    background: #101528;
+    box-shadow: 0 18px 44px rgba(16, 35, 63, .18);
   }
   .wardle-phone-frame-v19 img {
-    height: auto;
+    height: 100%;
     border-radius: 17px;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center top;
   }
   .wardle-slide-caption-v22 {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
     display: block;
-    min-height: 126px;
-    padding: 14px 2px 0;
+    min-height: 0;
+    padding: 13px 14px 14px;
+    border: 1px solid rgba(255, 255, 255, .58);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 16px 34px rgba(16, 35, 63, .2);
+    backdrop-filter: blur(14px);
+    transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
   }
   .wardle-slide-caption-v22 span {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--forest-2);
-    font-size: .66rem;
+    font-size: .62rem;
     font-weight: 900;
     letter-spacing: .12em;
     text-transform: uppercase;
@@ -1172,55 +1194,60 @@ footer .brand { color: #fff; }
   .wardle-slide-caption-v22 strong {
     display: block;
     color: var(--ink);
-    font-size: clamp(1.05rem, 5vw, 1.2rem);
+    padding-right: 94px;
+    font-size: clamp(1rem, 4.8vw, 1.18rem);
     line-height: 1.2;
     letter-spacing: -.03em;
   }
   .wardle-slide-caption-v22 p {
-    margin-top: 7px;
+    margin-top: 6px;
     color: var(--body);
-    font-size: .9rem;
-    line-height: 1.5;
+    padding-right: 2px;
+    font-size: .8rem;
+    line-height: 1.42;
   }
-  .wardle-carousel-status-v22 {
-    order: 5;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-height: 24px;
-    margin-top: 12px;
-    color: #667085;
-    font-size: .76rem;
-    font-weight: 850;
-  }
-  .wardle-carousel-count-v22 {
-    color: var(--ink);
-    white-space: nowrap;
-  }
-  .wardle-carousel-dots-v22 {
+  .wardle-caption-toggle-v23 {
+    position: absolute;
+    top: 11px;
+    right: 11px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-  }
-  .wardle-carousel-dots-v22 i {
-    width: 6px;
-    height: 6px;
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(0, 128, 166, .18);
     border-radius: 999px;
-    background: #cbd7e5;
-    transition: width .18s ease, background .18s ease;
+    color: var(--forest);
+    background: rgba(255, 255, 255, .88);
+    font-size: .72rem;
+    font-weight: 900;
+    box-shadow: 0 8px 18px rgba(16, 35, 63, .12);
   }
-  .wardle-carousel-dots-v22 i.active {
-    width: 18px;
-    background: var(--forest);
+  .wardle-caption-toggle-v23:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
   }
-  .wardle-swipe-hint-v22 {
-    margin-left: auto;
-    color: #7a889b;
-    transition: opacity .18s ease;
-    white-space: nowrap;
+  .wardle-swipe-track-v22.details-collapsed-v23 .wardle-slide-caption-v22 {
+    left: auto;
+    right: 14px;
+    bottom: 14px;
+    width: auto;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
   }
-  .wardle-swipe-hint-v22.hidden {
-    opacity: 0;
+  .wardle-swipe-track-v22.details-collapsed-v23 .wardle-slide-caption-v22 span,
+  .wardle-swipe-track-v22.details-collapsed-v23 .wardle-slide-caption-v22 strong,
+  .wardle-swipe-track-v22.details-collapsed-v23 .wardle-slide-caption-v22 p {
+    display: none;
+  }
+  .wardle-swipe-track-v22.details-collapsed-v23 .wardle-caption-toggle-v23 {
+    position: static;
+    min-height: 36px;
+    color: var(--ink);
+    border-color: rgba(255, 255, 255, .54);
+    background: rgba(255, 255, 255, .92);
   }
   .event-gallery-v7 { min-height: auto; padding: 16px; }
   .event-social-head { margin-bottom: 12px; }
@@ -1270,8 +1297,4 @@ footer .brand { color: #fff; }
     transition: none;
   }
   .wardle-phone-frame-v19 img { animation: none; }
-  .wardle-carousel-dots-v22 i,
-  .wardle-swipe-hint-v22 {
-    transition: none;
-  }
 }

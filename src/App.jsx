@@ -370,7 +370,7 @@ function About() {
 
 function Wardle({ onDemo }) {
   const [activeView, setActiveView] = useState(0);
-  const [hasExploredShowcase, setHasExploredShowcase] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(true);
   const trackRef = useRef(null);
   const slideRefs = useRef([]);
   const views = [
@@ -414,10 +414,6 @@ function Wardle({ onDemo }) {
     return String(index + 1).padStart(2, '0');
   }
 
-  function markShowcaseExplored() {
-    setHasExploredShowcase((current) => (current ? current : true));
-  }
-
   function scrollSelectedTabIntoView(index) {
     window.requestAnimationFrame(() => {
       const selectedTab = document.getElementById(`wardle-view-tab-${index}`);
@@ -441,7 +437,6 @@ function Wardle({ onDemo }) {
   }
 
   function selectView(index) {
-    markShowcaseExplored();
     setActiveView(index);
     scrollSlideIntoView(index);
     scrollSelectedTabIntoView(index);
@@ -464,7 +459,6 @@ function Wardle({ onDemo }) {
       nextIndex = lastIndex;
     }
 
-    markShowcaseExplored();
     setActiveView(nextIndex);
     scrollSlideIntoView(nextIndex);
     window.requestAnimationFrame(() => {
@@ -475,69 +469,43 @@ function Wardle({ onDemo }) {
 
   useEffect(() => {
     const track = trackRef.current;
-    const slides = slideRefs.current.filter(Boolean);
+    if (!track) return undefined;
 
-    if (!track || slides.length === 0) return undefined;
+    let frameId = 0;
 
-    if (!('IntersectionObserver' in window)) {
-      let frameId = 0;
+    function updateActiveViewFromScroll() {
+      frameId = 0;
+      const slides = slideRefs.current.filter(Boolean);
+      if (slides.length === 0) return;
 
-      function updateFromScroll() {
-        frameId = 0;
-        const trackRect = track.getBoundingClientRect();
-        const trackStart = trackRect.left;
-        const nextIndex = slides.reduce(
-          (closest, slide, index) => {
-            const distance = Math.abs(slide.getBoundingClientRect().left - trackStart);
-            return distance < closest.distance ? { index, distance } : closest;
-          },
-          { index: 0, distance: Number.POSITIVE_INFINITY }
-        ).index;
+      const trackRect = track.getBoundingClientRect();
+      const nextIndex = slides.reduce(
+        (closest, slide, index) => {
+          const distance = Math.abs(slide.getBoundingClientRect().left - trackRect.left);
+          return distance < closest.distance ? { index, distance } : closest;
+        },
+        { index: 0, distance: Number.POSITIVE_INFINITY }
+      ).index;
 
-        setActiveView((current) => {
-          if (current === nextIndex) return current;
-          scrollSelectedTabIntoView(nextIndex);
-          return nextIndex;
-        });
-      }
-
-      function handleScrollFallback() {
-        if (frameId) return;
-        frameId = window.requestAnimationFrame(updateFromScroll);
-      }
-
-      track.addEventListener('scroll', handleScrollFallback, { passive: true });
-      return () => {
-        if (frameId) window.cancelAnimationFrame(frameId);
-        track.removeEventListener('scroll', handleScrollFallback);
-      };
+      setActiveView((current) => {
+        if (current === nextIndex) return current;
+        scrollSelectedTabIntoView(nextIndex);
+        return nextIndex;
+      });
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const winningEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    function handleScroll() {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateActiveViewFromScroll);
+    }
 
-        if (!winningEntry) return;
+    track.addEventListener('scroll', handleScroll, { passive: true });
+    updateActiveViewFromScroll();
 
-        const nextIndex = Number(winningEntry.target.dataset.wardleSlide);
-        if (!Number.isInteger(nextIndex)) return;
-
-        setActiveView((current) => {
-          if (current === nextIndex) return current;
-          scrollSelectedTabIntoView(nextIndex);
-          return nextIndex;
-        });
-      },
-      {
-        root: track,
-        threshold: [0.55, 0.7, 0.85, 0.95],
-      }
-    );
-
-    slides.forEach((slide) => observer.observe(slide));
-    return () => observer.disconnect();
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      track.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (
@@ -565,7 +533,7 @@ function Wardle({ onDemo }) {
           <div className="wardle-showcase-head-v19">
             <span>Inside Wardle</span>
             <div className="wardle-journey-statement-v22" aria-hidden="true">
-              Practice <span>→</span> Understand <span>→</span> Retain <span>→</span> Return
+              Practice cases, understand decisions and retain learning.
             </div>
             <div className="wardle-showcase-caption-v19">
               <strong>{active.title}</strong>
@@ -576,18 +544,15 @@ function Wardle({ onDemo }) {
             aria-label="Wardle product views"
             className="wardle-view-tabs-v19"
             onKeyDown={handleViewKeyDown}
-            role="tablist"
           >
             {views.map((view, index) => (
               <button
                 aria-controls={`wardle-view-panel-${index}`}
-                aria-selected={activeView === index}
+                aria-current={activeView === index ? 'true' : undefined}
                 className={activeView === index ? 'active' : ''}
                 id={`wardle-view-tab-${index}`}
                 key={view.label}
                 onClick={() => selectView(index)}
-                role="tab"
-                tabIndex={activeView === index ? 0 : -1}
                 type="button"
               >
                 {view.label}
@@ -595,13 +560,13 @@ function Wardle({ onDemo }) {
             ))}
           </div>
           <div
-            className="wardle-screenshot-panel-v19 wardle-swipe-track-v22"
-            onScroll={markShowcaseExplored}
+            className={`wardle-screenshot-panel-v19 wardle-swipe-track-v22${
+              detailsOpen ? '' : ' details-collapsed-v23'
+            }`}
             ref={trackRef}
           >
             {views.map((view, index) => (
               <article
-                aria-hidden={activeView === index ? undefined : 'true'}
                 aria-labelledby={`wardle-view-tab-${index}`}
                 className={`wardle-swipe-slide-v22${activeView === index ? ' active' : ''}`}
                 data-wardle-slide={index}
@@ -610,7 +575,7 @@ function Wardle({ onDemo }) {
                 ref={(element) => {
                   slideRefs.current[index] = element;
                 }}
-                role="tabpanel"
+                role="group"
               >
                 <figure className="wardle-phone-frame-v19">
                   <img
@@ -628,24 +593,18 @@ function Wardle({ onDemo }) {
                   </span>
                   <strong>{view.title}</strong>
                   <p>{view.description}</p>
+                  <button
+                    aria-expanded={detailsOpen}
+                    className="wardle-caption-toggle-v23"
+                    onClick={() => setDetailsOpen((current) => !current)}
+                    type="button"
+                  >
+                    {detailsOpen ? 'Hide details' : 'Show details'}
+                  </button>
                 </div>
               </article>
             ))}
           </div>
-          <div className="wardle-carousel-status-v22">
-            <span className="wardle-carousel-count-v22">
-              {activeView + 1} / {views.length}
-            </span>
-            <span aria-hidden="true" className="wardle-carousel-dots-v22">
-              {views.map((view, index) => (
-                <i className={activeView === index ? 'active' : ''} key={`${view.label}-dot`} />
-              ))}
-            </span>
-            <span className={`wardle-swipe-hint-v22${hasExploredShowcase ? ' hidden' : ''}`}>Swipe to explore</span>
-          </div>
-          <p aria-live="polite" className="sr-only">
-            Showing {activeView + 1} of {views.length}: {active.label}
-          </p>
         </div>
       </div>
     </section>
