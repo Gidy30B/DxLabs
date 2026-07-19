@@ -3,6 +3,10 @@ import logo from '../assets/dxlabs-logo.svg';
 import presentationOne from '../assets/meded-africa-2026-presentation-1.jpeg';
 import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
+import wardleBreakdown from './assets/wardle/wardle-case-breakdown.webp';
+import wardleLeaderboard from './assets/wardle/wardle-leaderboard.webp';
+import wardleLearnRecall from './assets/wardle/wardle-learn-recall.webp';
+import wardleProgressiveCase from './assets/wardle/wardle-progressive-case.webp';
 
 const contactEmail = 'dxlabssupport@gmail.com';
 const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
@@ -291,23 +295,59 @@ function About() {
 }
 
 function Wardle({ onDemo }) {
-  const stages = [
+  const [activeView, setActiveView] = useState(0);
+  const views = [
     {
-      step: '01 - Interpret',
-      title: 'Review progressive clinical evidence',
-      text: 'History, examination and investigation findings are revealed as the case develops.',
+      label: 'Play',
+      title: 'Progressive clinical cases',
+      description: 'Work through history, examination and investigation findings as the case develops.',
+      image: wardleProgressiveCase,
+      alt: 'Wardle progressive case showing history, symptom and vital-sign clues in a diagnostic challenge.',
     },
     {
-      step: '02 - Commit',
-      title: 'Choose the most likely diagnosis',
-      text: 'Learners make a decision before seeing the explanation.',
+      label: 'Breakdown',
+      title: 'Reasoning behind the diagnosis',
+      description: 'Review how individual clues support the diagnosis and distinguish important alternatives.',
+      image: wardleBreakdown,
+      alt: 'Wardle case breakdown explaining how clinical clues support the diagnosis of pheochromocytoma.',
     },
     {
-      step: '03 - Review',
-      title: 'Understand the reasoning',
-      text: 'The breakdown connects key clues, differentials and practical learning points.',
+      label: 'Learn & Recall',
+      title: 'Learning that continues after the case',
+      description: 'Revisit completed cases, track specialty coverage and return to diagnoses that are due for recall.',
+      image: wardleLearnRecall,
+      alt: 'Wardle Learn dashboard showing accuracy, completed cases, recall queue and specialty library.',
+    },
+    {
+      label: 'Leaderboard',
+      title: 'Motivation through friendly competition',
+      description: 'Daily, weekly and all-time rankings add a social layer to regular case practice.',
+      image: wardleLeaderboard,
+      alt: 'Wardle weekly leaderboard showing anonymized learner rankings and scores.',
     },
   ];
+  const active = views[activeView];
+
+  function handleViewKeyDown(event) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+
+    event.preventDefault();
+    const lastIndex = views.length - 1;
+    let nextIndex = activeView;
+
+    if (event.key === 'ArrowLeft') {
+      nextIndex = activeView === 0 ? lastIndex : activeView - 1;
+    } else if (event.key === 'ArrowRight') {
+      nextIndex = activeView === lastIndex ? 0 : activeView + 1;
+    } else if (event.key === 'Home') {
+      nextIndex = 0;
+    } else if (event.key === 'End') {
+      nextIndex = lastIndex;
+    }
+
+    setActiveView(nextIndex);
+    window.requestAnimationFrame(() => document.getElementById(`wardle-view-tab-${nextIndex}`)?.focus());
+  }
 
   return (
     <section className="section wardle-v5" id="wardle">
@@ -330,19 +370,51 @@ function Wardle({ onDemo }) {
           </div>
           <span className="product-attribution-v9">Wardle is DxLabs' first product.</span>
         </div>
-        <div className="demo-card-v5 wardle-loop-card-v18 reveal">
-          <div className="wardle-loop-head-v18">
-            <span>How Wardle works</span>
-            <strong>Wardle learning loop</strong>
+        <div className="demo-card-v5 wardle-showcase-v19 reveal">
+          <div className="wardle-showcase-head-v19">
+            <span>Real Wardle interface</span>
+            <strong>{active.title}</strong>
+            <p>{active.description}</p>
           </div>
-          <div className="wardle-loop-stages-v18" aria-label="Wardle learning loop stages">
-            {stages.map((stage) => (
-              <article className="wardle-loop-stage-v18" key={stage.step}>
-                <span>{stage.step}</span>
-                <h3>{stage.title}</h3>
-                <p>{stage.text}</p>
-              </article>
+          <div
+            aria-label="Wardle product views"
+            className="wardle-view-tabs-v19"
+            onKeyDown={handleViewKeyDown}
+            role="tablist"
+          >
+            {views.map((view, index) => (
+              <button
+                aria-controls="wardle-view-panel"
+                aria-selected={activeView === index}
+                className={activeView === index ? 'active' : ''}
+                id={`wardle-view-tab-${index}`}
+                key={view.label}
+                onClick={() => setActiveView(index)}
+                role="tab"
+                tabIndex={activeView === index ? 0 : -1}
+                type="button"
+              >
+                {view.label}
+              </button>
             ))}
+          </div>
+          <div
+            aria-labelledby={`wardle-view-tab-${activeView}`}
+            className="wardle-screenshot-panel-v19"
+            id="wardle-view-panel"
+            role="tabpanel"
+          >
+            <figure className="wardle-phone-frame-v19">
+              <img
+                alt={active.alt}
+                decoding="async"
+                height="1438"
+                key={active.label}
+                loading={activeView === 0 ? 'eager' : 'lazy'}
+                src={active.image}
+                width="720"
+              />
+            </figure>
           </div>
         </div>
       </div>
