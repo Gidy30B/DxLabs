@@ -402,6 +402,24 @@ function Wardle({ onDemo }) {
   ];
   const active = views[activeView];
 
+  function scrollSelectedTabIntoView(index) {
+    window.requestAnimationFrame(() => {
+      const selectedTab = document.getElementById(`wardle-view-tab-${index}`);
+      const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+      selectedTab?.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    });
+  }
+
+  function selectView(index) {
+    setActiveView(index);
+    scrollSelectedTabIntoView(index);
+  }
+
   function handleViewKeyDown(event) {
     if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
 
@@ -420,7 +438,10 @@ function Wardle({ onDemo }) {
     }
 
     setActiveView(nextIndex);
-    window.requestAnimationFrame(() => document.getElementById(`wardle-view-tab-${nextIndex}`)?.focus());
+    window.requestAnimationFrame(() => {
+      document.getElementById(`wardle-view-tab-${nextIndex}`)?.focus();
+      scrollSelectedTabIntoView(nextIndex);
+    });
   }
 
   return (
@@ -446,9 +467,11 @@ function Wardle({ onDemo }) {
         </div>
         <div className="demo-card-v5 wardle-showcase-v19 reveal">
           <div className="wardle-showcase-head-v19">
-            <span>Real Wardle interface</span>
-            <strong>{active.title}</strong>
-            <p>{active.description}</p>
+            <span>Inside Wardle</span>
+            <div className="wardle-showcase-caption-v19">
+              <strong>{active.title}</strong>
+              <p>{active.description}</p>
+            </div>
           </div>
           <div
             aria-label="Wardle product views"
@@ -463,7 +486,7 @@ function Wardle({ onDemo }) {
                 className={activeView === index ? 'active' : ''}
                 id={`wardle-view-tab-${index}`}
                 key={view.label}
-                onClick={() => setActiveView(index)}
+                onClick={() => selectView(index)}
                 role="tab"
                 tabIndex={activeView === index ? 0 : -1}
                 type="button"
