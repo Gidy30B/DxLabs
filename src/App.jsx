@@ -213,10 +213,10 @@ function Hero() {
 
 function EvidenceStrip() {
   const evidence = [
-    ['85', 'Beta participants in Kenya'],
-    ['4 weeks', 'Initial Wardle beta period'],
-    ['68%', 'Day 7 retention'],
-    ['41%', 'Day 30 retention'],
+    ['Operating product', 'Wardle is live for daily clinical-reasoning practice.'],
+    ['Beta completed', 'Initial feasibility work conducted in Kenya.'],
+    ['Regional presentation', 'Findings presented at MedEdAfrica 2026.'],
+    ['Next study', 'Controlled pre/post assessment planned.'],
   ];
 
   return (
@@ -226,8 +226,8 @@ function EvidenceStrip() {
           <div className="eyebrow">Early progress</div>
           <h2 id="evidence-title">From product build to early medical education evidence.</h2>
           <p>
-            Wardle's early development has included a four-week beta with participants in Kenya and presentation of
-            the findings at MedEdAfrica 2026.
+            Wardle has moved from live product use to completed beta work, regional presentation and a planned next
+            stage of evaluation.
           </p>
         </header>
         <dl className="evidence-grid-v18 reveal">
@@ -244,30 +244,41 @@ function EvidenceStrip() {
 }
 
 function BetaFindings() {
-  const metrics = [
-    ['34%', 'scorecard shares / daily active users'],
-    ['82%', 'reported improved confidence'],
-    ['94%', 'would recommend Wardle'],
-    ['3.8 / 6', 'average attempts'],
-    ['6.4-minute', 'average session'],
-  ];
+  const betaFindings = {
+    participants: 85,
+    durationWeeks: 4,
+    retention: [
+      { day: 1, value: 92 },
+      { day: 7, value: 68 },
+      { day: 14, value: 52 },
+      { day: 30, value: 41 },
+    ],
+    scorecardShareRate: 34,
+    confidenceRate: 82,
+    recommendationRate: 94,
+    averageAttempts: 3.8,
+    maximumAttempts: 6,
+    averageSessionMinutes: 6.4,
+  };
 
-  const retention = [
-    ['Day 1', '92%'],
-    ['Day 7', '68%'],
-    ['Day 14', '52%'],
-    ['Day 30', '41%'],
+  const metrics = [
+    [`${betaFindings.scorecardShareRate}%`, 'scorecard shares / daily active users'],
+    [`${betaFindings.confidenceRate}%`, 'reported improved clinical-reasoning confidence'],
+    [`${betaFindings.recommendationRate}%`, 'would recommend Wardle'],
+    [`${betaFindings.averageAttempts} / ${betaFindings.maximumAttempts}`, 'average attempts'],
+    [`${betaFindings.averageSessionMinutes}-minute`, 'average session duration'],
   ];
 
   return (
-    <section aria-labelledby="beta-findings-title" className="beta-findings-v20">
+    <section aria-labelledby="beta-findings-title" className="beta-findings-v20" id="beta-findings">
       <div className="container beta-findings-shell-v20">
         <header className="beta-findings-head-v20 reveal">
           <div className="eyebrow">Beta findings</div>
           <h2 id="beta-findings-title">Early evidence of engagement and habit formation.</h2>
           <p>
-            Wardle's first four-week beta involved 85 participants in Kenya. The pilot examined whether a daily,
-            gamified clinical-reasoning challenge could sustain learner engagement and become part of regular practice.
+            Wardle's first {betaFindings.durationWeeks}-week beta involved {betaFindings.participants} participants in
+            Kenya. The pilot examined whether a daily, gamified clinical-reasoning challenge could sustain learner
+            engagement and become part of regular practice.
           </p>
         </header>
         <div className="beta-findings-body-v20">
@@ -282,12 +293,12 @@ function BetaFindings() {
           <div className="beta-retention-v20 reveal">
             <h3>Beta retention</h3>
             <dl>
-              {retention.map(([label, value]) => (
-                <div className="beta-retention-row-v20" key={label}>
-                  <dt>{label}</dt>
+              {betaFindings.retention.map(({ day, value }) => (
+                <div className="beta-retention-row-v20" key={day}>
+                  <dt>Day {day}</dt>
                   <dd>
-                    <span>{value}</span>
-                    <i style={{ '--retention': value }} />
+                    <span>{value}%</span>
+                    <i style={{ '--retention': `${value}%` }} />
                   </dd>
                 </div>
               ))}
@@ -295,9 +306,9 @@ function BetaFindings() {
           </div>
         </div>
         <p className="beta-limitations-v20 reveal">
-          Early-stage evidence: The beta cohort was self-selected and limited to Kenya. Confidence outcomes were
-          self-reported. A controlled study with pre- and post-intervention diagnostic assessment is planned to
-          evaluate objective changes in clinical reasoning.
+          The beta cohort was self-selected and limited to Kenya. Confidence outcomes were self-reported. A controlled
+          study with pre- and post-intervention diagnostic assessment is planned to evaluate objective changes in
+          clinical reasoning.
         </p>
       </div>
     </section>
@@ -522,16 +533,16 @@ function News() {
   const images = [
     {
       src: presentationOne,
-      alt: 'DxLabs presenting Wardle beta pilot data at MedEd Africa 2026',
+      alt: 'DxLabs presenting Wardle at MedEd Africa 2026',
       label: 'Oral presentation',
-      caption: 'Wardle beta pilot data shared with the regional medical education community.',
-      stat: '85 trainees',
+      caption: 'Wardle presented as a daily diagnostic challenge for clinical reasoning in African medical education.',
+      stat: 'Oral presentation',
     },
     {
       src: conferenceVenue,
       alt: 'DxLabs founders at MedEd Africa 2026 in Addis Ababa',
       label: 'Founders',
-      caption: 'DxLabs founders at MedEd Africa 2026 after sharing the Wardle beta pilot story.',
+      caption: 'DxLabs founders at MedEd Africa 2026 after sharing the Wardle presentation.',
       stat: 'DxLabs team',
     },
   ];
@@ -548,8 +559,9 @@ function News() {
             <h2>A MedEd Africa milestone.</h2>
           </div>
           <p className="reveal">
-            Wardle's beta findings moved from product build to public medical education conversation when DxLabs
-            presented the four-week Kenya beta at MedEdAfrica 2026 in Addis Ababa.
+            DxLabs presented Wardle's early beta findings at MedEdAfrica 2026 in Addis Ababa. The official paper
+            described Wardle as a gamified daily diagnostic challenge for clinical reasoning in African medical
+            education.
           </p>
         </div>
         <article className="event-card-v7 reveal">
@@ -595,17 +607,20 @@ function News() {
               <span>Conference presentation</span>
               <time dateTime="2026">2026</time>
             </div>
-            <h3>Wardle beta pilot presented at MedEd Africa 2026</h3>
+            <h3>Wardle presented at MedEd Africa 2026</h3>
             <p>
-              DxLabs shared findings from Wardle's four-week beta with 85 participants in Kenya, including retention,
-              recommendation, confidence and daily-practice engagement signals from the early pilot.
+              The presentation introduced Wardle to the regional medical education community and positioned the product
+              as a daily diagnostic challenge for clinical reasoning practice.
             </p>
+            <a className="event-findings-link-v20" href="#beta-findings">
+              Review the beta findings <span aria-hidden="true">→</span>
+            </a>
             <div className="event-slide-note" aria-live="polite">
               <strong>{active.stat}</strong>
               <span>{active.caption}</span>
             </div>
             <div className="event-tags-v7" aria-label="News tags">
-              <span>Beta pilot</span>
+              <span>Conference presentation</span>
               <span>Medical education</span>
               <span>Wardle</span>
             </div>
