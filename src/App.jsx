@@ -120,7 +120,6 @@ const navItems = [
   ['Areas', '#focus'],
   ['News', '#news'],
   ['Leadership', '#leadership'],
-  ['Contact', '#contact'],
 ];
 
 function Brand({ footer = false }) {
@@ -145,6 +144,9 @@ function Header() {
               {label}
             </a>
           ))}
+          <a className="mobile-contact-link-v21" href="#contact" onClick={() => setOpen(false)}>
+            Contact
+          </a>
         </nav>
         <a className="button button-primary desktop-cta" href="#contact">
           Contact
@@ -496,10 +498,30 @@ function Wardle({ onDemo }) {
 
 function Focus() {
   const areas = [
-    ['01', 'Medical education', 'Digital learning experiences that strengthen clinical reasoning and support continued professional development.', 'Current focus'],
-    ['02', 'Health systems', 'Tools that improve the flow of clinical work, information and essential services across care settings.', 'Product interest'],
-    ['03', 'Diagnostic innovation', 'Responsible technologies that support the interpretation and use of clinical information without replacing professional judgement.', 'Exploration'],
-    ['04', 'Imaging science', 'Research into improving the quality, accessibility and practical value of medical imaging.', 'Research interest'],
+    [
+      '01',
+      'Medical education',
+      'Digital learning experiences that strengthen clinical reasoning and support continued professional development, beginning with Wardle.',
+      'Active product',
+    ],
+    [
+      '02',
+      'Health systems',
+      'Investigation of tools that could improve clinical workflows, information flow and essential service delivery across care settings.',
+      'Future product direction',
+    ],
+    [
+      '03',
+      'Diagnostic innovation',
+      'Responsible investigation of technologies that support the interpretation and use of clinical information without replacing professional judgement.',
+      'Research and development',
+    ],
+    [
+      '04',
+      'Imaging science',
+      'Research into improving the quality, accessibility and practical value of medical imaging.',
+      'Research interest',
+    ],
   ];
 
   return (
@@ -515,7 +537,7 @@ function Focus() {
         </div>
         <div className="focus-list-v5">
           {areas.map(([num, title, text, status]) => (
-            <article className="focus-row-v5 reveal" key={title}>
+            <article className={`focus-row-v5 reveal${status === 'Active product' ? ' active' : ''}`} key={title}>
               <span className="num">{num}</span>
               <h3>{title}</h3>
               <p>{text}</p>
@@ -842,7 +864,6 @@ function Footer() {
             <a href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
               Visit Wardle <span aria-hidden="true">↗</span>
             </a>
-            <a href="#contact">Contact</a>
           </div>
           <div className="footer-contact-v8">
             <h2>Work with us</h2>
@@ -865,8 +886,65 @@ function Footer() {
 
 function FloatingContactMenu() {
   const [open, setOpen] = useState(false);
+  const [hiddenNearContact, setHiddenNearContact] = useState(false);
   const menuRef = useRef(null);
+  const contactVisibilityRef = useRef({ isIntersecting: false, ratio: 0 });
   const channels = getContactChannels();
+
+  useEffect(() => {
+    const contactSection = document.getElementById('contact');
+
+    if (!contactSection || !('IntersectionObserver' in window)) {
+      return undefined;
+    }
+
+    function updateHiddenState() {
+      const { isIntersecting, ratio } = contactVisibilityRef.current;
+      const contactHasFocus = contactSection.contains(document.activeElement);
+
+      setHiddenNearContact((current) => {
+        if (!current && isIntersecting && (ratio >= 0.35 || contactHasFocus)) {
+          return true;
+        }
+
+        if (current && !contactHasFocus && (!isIntersecting || ratio <= 0.2)) {
+          return false;
+        }
+
+        return current;
+      });
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        contactVisibilityRef.current = {
+          isIntersecting: entry.isIntersecting,
+          ratio: entry.intersectionRatio,
+        };
+        updateHiddenState();
+      },
+      { threshold: [0, 0.2, 0.35, 0.5] }
+    );
+
+    function handleContactFocusChange() {
+      window.requestAnimationFrame(updateHiddenState);
+    }
+
+    contactSection.addEventListener('focusin', handleContactFocusChange);
+    contactSection.addEventListener('focusout', handleContactFocusChange);
+    observer.observe(contactSection);
+    return () => {
+      contactSection.removeEventListener('focusin', handleContactFocusChange);
+      contactSection.removeEventListener('focusout', handleContactFocusChange);
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (hiddenNearContact) {
+      setOpen(false);
+    }
+  }, [hiddenNearContact]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -893,8 +971,8 @@ function FloatingContactMenu() {
   }, [open]);
 
   return (
-    <div className="floating-contact-v14" ref={menuRef}>
-      {open && (
+    <div className={`floating-contact-v14${hiddenNearContact ? ' hidden-near-contact-v21' : ''}`} ref={menuRef}>
+      {open && !hiddenNearContact && (
         <div className="floating-contact-options-v14" id="floating-contact-options">
           {channels.map((channel, index) => (
             <a
@@ -917,13 +995,15 @@ function FloatingContactMenu() {
       )}
       <button
         aria-controls="floating-contact-options"
-        aria-expanded={open}
-        aria-label={open ? 'Close contact options' : 'Open contact options'}
-        className={`floating-contact-trigger-v14${open ? ' open' : ''}`}
+        aria-expanded={open && !hiddenNearContact}
+        aria-label={open && !hiddenNearContact ? 'Close contact options' : 'Open contact options'}
+        className={`floating-contact-trigger-v14${open && !hiddenNearContact ? ' open' : ''}`}
+        disabled={hiddenNearContact}
         onClick={() => setOpen((current) => !current)}
+        tabIndex={hiddenNearContact ? -1 : undefined}
         type="button"
       >
-        <ContactIcon type={open ? 'close' : 'contact'} />
+        <ContactIcon type={open && !hiddenNearContact ? 'close' : 'contact'} />
       </button>
     </div>
   );
