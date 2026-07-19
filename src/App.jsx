@@ -6,7 +6,7 @@ import gideonPhoto from '../assets/dr-gideon-saningo.png';
 import wardleBreakdown from './assets/wardle/wardle-case-breakdown.webp';
 import wardleLeaderboard from './assets/wardle/wardle-leaderboard.webp';
 import wardleLearnRecall from './assets/wardle/wardle-learn-recall.webp';
-import wardleProgressiveCase from './assets/wardle/wardle-progressive-case.webp';
+import wardleProgressiveCase from './assets/wardle/wardle-progressive-case.png';
 
 const contactEmail = 'dxlabssupport@gmail.com';
 const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
@@ -604,6 +604,17 @@ function Wardle({ onDemo }) {
                 </div>
               </article>
             ))}
+          </div>
+          <div className="wardle-scroll-indicator-v24" aria-hidden="true">
+            <span>{activeView + 1} / {views.length}</span>
+            <div className="wardle-scroll-track-v24">
+              <i style={{ '--scroll-progress': `${((activeView + 1) / views.length) * 100}%` }} />
+            </div>
+            <div className="wardle-scroll-dots-v24">
+              {views.map((view, index) => (
+                <i className={activeView === index ? 'active' : ''} key={`${view.label}-scroll-dot`} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

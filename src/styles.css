@@ -322,6 +322,9 @@ p { margin: 0; }
 .wardle-caption-toggle-v23 {
   display: none;
 }
+.wardle-scroll-indicator-v24 {
+  display: none;
+}
 .wardle-phone-frame-v19 {
   margin: 0;
   padding: 8px;
@@ -1248,6 +1251,51 @@ footer .brand { color: #fff; }
     color: var(--ink);
     border-color: rgba(255, 255, 255, .54);
     background: rgba(255, 255, 255, .92);
+  }
+  .wardle-scroll-indicator-v24 {
+    order: 5;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    color: #667085;
+    font-size: .76rem;
+    font-weight: 850;
+  }
+  .wardle-scroll-indicator-v24 > span {
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .wardle-scroll-track-v24 {
+    height: 4px;
+    border-radius: 999px;
+    background: #dce7f1;
+    overflow: hidden;
+  }
+  .wardle-scroll-track-v24 i {
+    display: block;
+    width: var(--scroll-progress);
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--forest), var(--teal));
+    transition: width .18s ease;
+  }
+  .wardle-scroll-dots-v24 {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .wardle-scroll-dots-v24 i {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #c7d5e4;
+    transition: width .18s ease, background .18s ease;
+  }
+  .wardle-scroll-dots-v24 i.active {
+    width: 18px;
+    background: var(--forest);
   }
   .event-gallery-v7 { min-height: auto; padding: 16px; }
   .event-social-head { margin-bottom: 12px; }
