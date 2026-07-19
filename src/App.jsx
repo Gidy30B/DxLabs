@@ -259,6 +259,24 @@ function About() {
 }
 
 function Wardle({ onDemo }) {
+  const stages = [
+    {
+      step: '01 - Interpret',
+      title: 'Review progressive clinical evidence',
+      text: 'History, examination and investigation findings are revealed as the case develops.',
+    },
+    {
+      step: '02 - Commit',
+      title: 'Choose the most likely diagnosis',
+      text: 'Learners make a decision before seeing the explanation.',
+    },
+    {
+      step: '03 - Review',
+      title: 'Understand the reasoning',
+      text: 'The breakdown connects key clues, differentials and practical learning points.',
+    },
+  ];
+
   return (
     <section className="section wardle-v5" id="wardle">
       <div className="container wardle-grid-v5">
@@ -266,39 +284,34 @@ function Wardle({ onDemo }) {
           <div className="product-kicker">Current product</div>
           <h2>Clinical reasoning, practised daily.</h2>
           <p>
-            Wardle is a case-based learning platform for medical students and early-career clinicians. Progressive
-            cases ask learners to interpret evidence, commit to a diagnosis and review the reasoning behind it,
-            turning diagnostic thinking into a regular habit.
+            Wardle is a case-based learning platform for medical students and early-career clinicians. Learners work
+            through progressive clinical evidence, commit to a diagnosis and review the reasoning behind the case.
           </p>
           <div className="wardle-actions-v5">
-            <span className="product-attribution-v9">Wardle is DxLabs' first product.</span>
-            <a className="text-link" href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
-              Visit Wardle <span aria-hidden="true">↗</span>
+            <a className="button button-primary wardle-primary-cta-v18" href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
+              Play today's case <span aria-hidden="true">↗</span>
             </a>
+            <button className="button button-secondary wardle-secondary-cta-v18" onClick={onDemo} type="button">
+              <ContactIcon type="send" />
+              Watch the demo
+            </button>
           </div>
+          <span className="product-attribution-v9">Wardle is DxLabs' first product.</span>
         </div>
-        <div className="demo-card-v5 reveal">
-          <div aria-hidden="true" className="demo-ui-v5">
-            <div className="demo-head-v5">
-              <strong>Wardle</strong>
-              <span>Demonstration</span>
-            </div>
-            <div className="demo-case-v5">
-              <span>Product demonstration</span>
-              <h3>See how a case moves from evidence to diagnosis.</h3>
-              <div className="demo-lines-v5">
-                <i />
-                <i />
-                <i />
-              </div>
-            </div>
-            <div className="demo-foot-v5">Progressive case-based learning</div>
+        <div className="demo-card-v5 wardle-loop-card-v18 reveal">
+          <div className="wardle-loop-head-v18">
+            <span>How Wardle works</span>
+            <strong>Wardle learning loop</strong>
           </div>
-          <button aria-label="Watch the Wardle demo" className="demo-play-v5" onClick={onDemo} type="button">
-            <span>
-              <b aria-hidden="true">▶</b> Play demo
-            </span>
-          </button>
+          <div className="wardle-loop-stages-v18" aria-label="Wardle learning loop stages">
+            {stages.map((stage) => (
+              <article className="wardle-loop-stage-v18" key={stage.step}>
+                <span>{stage.step}</span>
+                <h3>{stage.title}</h3>
+                <p>{stage.text}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -736,43 +749,127 @@ function FloatingContactMenu() {
   );
 }
 
-function DemoModal({ open, onClose }) {
+function DemoModal({ open, onClose, pageShellRef, returnFocusRef }) {
   const [videoError, setVideoError] = useState(false);
+  const dialogRef = useRef(null);
+  const closeButtonRef = useRef(null);
   const videoRef = useRef(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return undefined;
     const video = videoRef.current;
-    if (!video) return;
+    const pageShell = pageShellRef?.current;
+
+    document.body.classList.add('modal-open');
+    if (pageShell) {
+      if ('inert' in pageShell) {
+        pageShell.inert = true;
+      } else {
+        pageShell.setAttribute('aria-hidden', 'true');
+      }
+    }
 
     setVideoError(false);
-    video.currentTime = 0;
-    const playAttempt = video.play();
-    if (playAttempt?.catch) {
-      playAttempt.catch(() => {});
+    window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+
+    if (video) {
+      video.currentTime = 0;
+      const playAttempt = video.play();
+      if (playAttempt?.catch) {
+        playAttempt.catch(() => {});
+      }
     }
-  }, [open]);
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusable = Array.from(
+        dialog.querySelectorAll(
+          'a[href], button:not([disabled]), video[controls], input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true');
+
+      if (focusable.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.removeEventListener('keydown', handleKeyDown);
+
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+
+      if (pageShell) {
+        if ('inert' in pageShell) {
+          pageShell.inert = false;
+        } else {
+          pageShell.removeAttribute('aria-hidden');
+        }
+      }
+
+      window.requestAnimationFrame(() => returnFocusRef?.current?.focus());
+    };
+  }, [open, onClose, pageShellRef, returnFocusRef]);
 
   if (!open) return null;
 
   return (
-    <div aria-labelledby="demoTitle" aria-modal="true" className="modal open" role="dialog">
-      <div className="modal-dialog">
+    <div
+      aria-describedby="demoDescription"
+      aria-labelledby="demoTitle"
+      aria-modal="true"
+      className="modal open"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      role="dialog"
+      tabIndex="-1"
+    >
+      <div className="modal-dialog" ref={dialogRef}>
         <div className="modal-head">
           <strong id="demoTitle">Wardle product demo</strong>
-          <button aria-label="Close demo" className="modal-close" onClick={onClose} type="button">
+          <button aria-label="Close demo" className="modal-close" onClick={onClose} ref={closeButtonRef} type="button">
             ×
           </button>
         </div>
-        <p className="video-mobile-note">Recorded on desktop. Rotate your phone for the best view.</p>
+        <p className="video-mobile-note" id="demoDescription">Recorded on desktop. Rotate your phone for a wider view if helpful.</p>
         <div className="video-frame">
           <video
             autoPlay
             controls
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
             ref={videoRef}
+            tabIndex="0"
             onCanPlay={() => setVideoError(false)}
             onError={() => setVideoError(true)}
           >
@@ -782,8 +879,10 @@ function DemoModal({ open, onClose }) {
           {videoError && (
             <div className="video-fallback">
               <div>
-                <strong>Wardle demo video</strong>
-                Place <code>wardle-demo.mp4</code> in the project root or public folder.
+                <strong>The Wardle demo could not be loaded.</strong>
+                <a href="https://wardle.it.com" rel="noopener noreferrer" target="_blank">
+                  Open Wardle and try today's case
+                </a>
               </div>
             </div>
           )}
@@ -795,6 +894,13 @@ function DemoModal({ open, onClose }) {
 
 export default function App() {
   const [demoOpen, setDemoOpen] = useState(false);
+  const pageShellRef = useRef(null);
+  const demoTriggerRef = useRef(null);
+
+  function openDemo(trigger) {
+    demoTriggerRef.current = trigger;
+    setDemoOpen(true);
+  }
 
   useEffect(() => {
     const revealEls = document.querySelectorAll('.reveal');
@@ -819,36 +925,31 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    document.body.classList.toggle('modal-open', demoOpen);
-    function onKeyDown(event) {
-      if (event.key === 'Escape') setDemoOpen(false);
-    }
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.body.classList.remove('modal-open');
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, [demoOpen]);
-
   return (
     <>
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <Header />
-      <main id="main">
-        <Hero />
-        <About />
-        <Wardle onDemo={() => setDemoOpen(true)} />
-        <Focus />
-        <News />
-        <Leadership />
-        <Contact />
-      </main>
-      <Footer />
-      {!demoOpen && <FloatingContactMenu />}
-      <DemoModal onClose={() => setDemoOpen(false)} open={demoOpen} />
+      <div ref={pageShellRef}>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main">
+          <Hero />
+          <About />
+          <Wardle onDemo={(event) => openDemo(event.currentTarget)} />
+          <Focus />
+          <News />
+          <Leadership />
+          <Contact />
+        </main>
+        <Footer />
+        {!demoOpen && <FloatingContactMenu />}
+      </div>
+      <DemoModal
+        onClose={() => setDemoOpen(false)}
+        open={demoOpen}
+        pageShellRef={pageShellRef}
+        returnFocusRef={demoTriggerRef}
+      />
     </>
   );
 }
