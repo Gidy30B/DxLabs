@@ -33,6 +33,8 @@ button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .container { width: min(calc(100% - 68px), var(--max)); margin-inline: auto; }
 .section { padding: 88px 0; }
+section[id] { scroll-margin-top: 88px; }
+.hero { scroll-margin-top: 0; }
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -127,7 +129,7 @@ p { margin: 0; }
 .hero h1 span { color: var(--forest-2); }
 .hero .lede { max-width: 650px; margin-top: 24px; }
 .hero-actions { margin-top: 31px; display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-caption { margin-top: 28px; color: #64748a; font-size: .82rem; letter-spacing: .02em; }
+.hero-caption { margin-top: 28px; color: #64748a; font-size: .86rem; font-weight: 750; letter-spacing: .01em; }
 .signal-panel { position: relative; min-height: 430px; border: 1px solid var(--line); border-radius: 24px; background: #fff; overflow: hidden; box-shadow: var(--shadow-soft); }
 .signal-grid {
   position: absolute;
@@ -247,6 +249,59 @@ p { margin: 0; }
 .wardle-loop-stage-v18:nth-child(2) {
   border-color: rgba(0, 128, 166, .22);
   box-shadow: inset 0 0 0 1px rgba(0, 128, 166, .05);
+}
+
+.evidence-v18 {
+  padding: 76px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+.evidence-head-v18 {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(320px, 1.1fr);
+  gap: 54px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+.evidence-head-v18 h2 {
+  max-width: 560px;
+  font-size: clamp(1.85rem, 3vw, 2.7rem);
+}
+.evidence-head-v18 p {
+  max-width: 610px;
+  color: var(--body);
+  font-size: .98rem;
+}
+.evidence-grid-v18 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--paper);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.evidence-item-v18 {
+  min-height: 160px;
+  padding: 24px 22px;
+  background: rgba(255, 255, 255, .76);
+}
+.evidence-item-v18 + .evidence-item-v18 { border-left: 1px solid var(--line); }
+.evidence-item-v18 dt {
+  margin-bottom: 12px;
+  color: var(--forest);
+  font-size: clamp(1.65rem, 2.4vw, 2.25rem);
+  font-weight: 850;
+  letter-spacing: -.04em;
+  line-height: 1.05;
+}
+.evidence-item-v18 dd {
+  margin: 0;
+  color: var(--body);
+  font-size: .88rem;
+  line-height: 1.45;
 }
 
 .focus-v5, .news-v7 { background: #fff; }
@@ -624,11 +679,15 @@ footer .brand { color: #fff; }
 .video-fallback a:hover { background: rgba(199, 243, 255, .08); }
 
 @media (max-width: 980px) {
-  .hero-grid-v5, .mission-header-v5, .wardle-grid-v5, .news-head-v7, .event-card-v7, .team-intro-v5, .contact-shell-v5 { grid-template-columns: 1fr; }
+  .hero-grid-v5, .mission-header-v5, .wardle-grid-v5, .evidence-head-v18, .news-head-v7, .event-card-v7, .team-intro-v5, .contact-shell-v5 { grid-template-columns: 1fr; }
   .hero-grid-v5 { gap: 45px; }
   .signal-panel { min-height: 360px; }
   .wardle-grid-v5 { gap: 44px; }
   .demo-card-v5 { max-width: 760px; width: 100%; }
+  .evidence-grid-v18 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .evidence-item-v18 + .evidence-item-v18 { border-left: 0; }
+  .evidence-item-v18:nth-child(2n) { border-left: 1px solid var(--line); }
+  .evidence-item-v18:nth-child(n + 3) { border-top: 1px solid var(--line); }
   .event-gallery-v7 { min-height: 574px; }
   .event-image-v7 { min-height: 452px; height: 452px; }
   .focus-row-v5 { grid-template-columns: 60px 1fr 1.2fr; }
@@ -640,9 +699,9 @@ footer .brand { color: #fff; }
 
 @media (max-width: 760px) {
   .container { width: min(calc(100% - 40px), var(--max)); }
-  .section, .mission-section-v5, .contact-v5 { padding: 64px 0; }
+  .section, .mission-section-v5, .evidence-v18, .contact-v5 { padding: 64px 0; }
   .hero { padding: 78px 0 60px; }
-  .hero h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
+  .hero h1 { font-size: clamp(2.48rem, 11.8vw, 3.8rem); }
   .signal-content { padding: 24px; }
   .signal-core svg { height: 72px; }
   .mission-grid-v5, .principles-v11, .principles-list-v11 { grid-template-columns: 1fr; }
@@ -682,6 +741,12 @@ footer .brand { color: #fff; }
   .nav-links.open { display: flex; }
   .nav-links a { padding: 12px; }
   .hero-actions .button { width: 100%; }
+  .hero-caption { font-size: .82rem; line-height: 1.45; }
+  .evidence-head-v18 { gap: 16px; margin-bottom: 22px; }
+  .evidence-grid-v18 { grid-template-columns: 1fr; border-radius: 16px; }
+  .evidence-item-v18 { min-height: 0; padding: 20px; }
+  .evidence-item-v18:nth-child(2n) { border-left: 0; }
+  .evidence-item-v18:nth-child(n + 2) { border-top: 1px solid var(--line); }
   .wardle-actions-v5 { align-items: stretch; }
   .wardle-actions-v5 .button { width: 100%; }
   .signal-panel { min-height: 270px; border-radius: 18px; }

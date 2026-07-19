@@ -166,21 +166,21 @@ function Hero() {
         <div className="reveal">
           <div className="eyebrow">Clinician-led health technology</div>
           <h1>
-            Better tools for healthcare <span>learning and practice.</span>
+            Clinician-led technology for better <span>clinical reasoning and healthcare practice.</span>
           </h1>
           <p className="lede">
-            DxLabs develops digital health products that strengthen clinical learning and address selected
-            challenges in healthcare delivery.
+            DxLabs builds clinically grounded digital health products for African healthcare professionals—starting
+            with Wardle, a daily case platform that turns diagnostic reasoning into regular practice.
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#wardle">
               Explore Wardle
             </a>
             <a className="button button-secondary" href="#contact">
-              Contact DxLabs
+              Work with DxLabs
             </a>
           </div>
-          <div className="hero-caption">Medical education - Health systems - Diagnostic innovation - Imaging science</div>
+          <div className="hero-caption">Medical education today · Broader health-system innovation over time</div>
         </div>
         <div aria-label="Abstract clinical signal graphic" className="signal-panel reveal">
           <div className="signal-grid" />
@@ -202,6 +202,38 @@ function Hero() {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function EvidenceStrip() {
+  const evidence = [
+    ['85', 'Medical trainees in the Wardle beta pilot'],
+    ['4 weeks', 'Early feasibility and learner-engagement study'],
+    ['MedEd Africa 2026', 'Pilot findings presented in Addis Ababa'],
+    ['Daily practice', 'Progressive cases designed for regular clinical reasoning'],
+  ];
+
+  return (
+    <section aria-labelledby="evidence-title" className="evidence-v18">
+      <div className="container">
+        <header className="evidence-head-v18 reveal">
+          <div className="eyebrow">Early progress</div>
+          <h2 id="evidence-title">From product build to early medical education evidence.</h2>
+          <p>
+            Wardle's early development has included a four-week beta pilot with medical trainees in Kenya and
+            presentation of the findings at MedEd Africa 2026.
+          </p>
+        </header>
+        <dl className="evidence-grid-v18 reveal">
+          {evidence.map(([value, label]) => (
+            <div className="evidence-item-v18" key={value}>
+              <dt>{value}</dt>
+              <dd>{label}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );
@@ -936,6 +968,7 @@ export default function App() {
           <Hero />
           <About />
           <Wardle onDemo={(event) => openDemo(event.currentTarget)} />
+          <EvidenceStrip />
           <Focus />
           <News />
           <Leadership />
