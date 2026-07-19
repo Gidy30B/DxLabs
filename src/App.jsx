@@ -213,10 +213,10 @@ function Hero() {
 
 function EvidenceStrip() {
   const evidence = [
-    ['85', 'Medical trainees in the Wardle beta pilot'],
-    ['4 weeks', 'Early feasibility and learner-engagement study'],
-    ['MedEd Africa 2026', 'Pilot findings presented in Addis Ababa'],
-    ['Daily practice', 'Progressive cases designed for regular clinical reasoning'],
+    ['85', 'Beta participants in Kenya'],
+    ['4 weeks', 'Initial Wardle beta period'],
+    ['68%', 'Day 7 retention'],
+    ['41%', 'Day 30 retention'],
   ];
 
   return (
@@ -226,8 +226,8 @@ function EvidenceStrip() {
           <div className="eyebrow">Early progress</div>
           <h2 id="evidence-title">From product build to early medical education evidence.</h2>
           <p>
-            Wardle's early development has included a four-week beta pilot with medical trainees in Kenya and
-            presentation of the findings at MedEd Africa 2026.
+            Wardle's early development has included a four-week beta with participants in Kenya and presentation of
+            the findings at MedEdAfrica 2026.
           </p>
         </header>
         <dl className="evidence-grid-v18 reveal">
@@ -238,6 +238,67 @@ function EvidenceStrip() {
             </div>
           ))}
         </dl>
+      </div>
+    </section>
+  );
+}
+
+function BetaFindings() {
+  const metrics = [
+    ['34%', 'scorecard shares / daily active users'],
+    ['82%', 'reported improved confidence'],
+    ['94%', 'would recommend Wardle'],
+    ['3.8 / 6', 'average attempts'],
+    ['6.4-minute', 'average session'],
+  ];
+
+  const retention = [
+    ['Day 1', '92%'],
+    ['Day 7', '68%'],
+    ['Day 14', '52%'],
+    ['Day 30', '41%'],
+  ];
+
+  return (
+    <section aria-labelledby="beta-findings-title" className="beta-findings-v20">
+      <div className="container beta-findings-shell-v20">
+        <header className="beta-findings-head-v20 reveal">
+          <div className="eyebrow">Beta findings</div>
+          <h2 id="beta-findings-title">Early evidence of engagement and habit formation.</h2>
+          <p>
+            Wardle's first four-week beta involved 85 participants in Kenya. The pilot examined whether a daily,
+            gamified clinical-reasoning challenge could sustain learner engagement and become part of regular practice.
+          </p>
+        </header>
+        <div className="beta-findings-body-v20">
+          <dl aria-label="Wardle beta supporting metrics" className="beta-metrics-v20 reveal">
+            {metrics.map(([value, label]) => (
+              <div className="beta-metric-v20" key={label}>
+                <dt>{value}</dt>
+                <dd>{label}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="beta-retention-v20 reveal">
+            <h3>Beta retention</h3>
+            <dl>
+              {retention.map(([label, value]) => (
+                <div className="beta-retention-row-v20" key={label}>
+                  <dt>{label}</dt>
+                  <dd>
+                    <span>{value}</span>
+                    <i style={{ '--retention': value }} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </div>
+        <p className="beta-limitations-v20 reveal">
+          Early-stage evidence: The beta cohort was self-selected and limited to Kenya. Confidence outcomes were
+          self-reported. A controlled study with pre- and post-intervention diagnostic assessment is planned to
+          evaluate objective changes in clinical reasoning.
+        </p>
       </div>
     </section>
   );
@@ -487,8 +548,8 @@ function News() {
             <h2>A MedEd Africa milestone.</h2>
           </div>
           <p className="reveal">
-            Wardle's beta pilot moved from product build to public medical education conversation, with early
-            feasibility data presented at MedEd Africa 2026 in Addis Ababa.
+            Wardle's beta findings moved from product build to public medical education conversation when DxLabs
+            presented the four-week Kenya beta at MedEdAfrica 2026 in Addis Ababa.
           </p>
         </div>
         <article className="event-card-v7 reveal">
@@ -536,8 +597,8 @@ function News() {
             </div>
             <h3>Wardle beta pilot presented at MedEd Africa 2026</h3>
             <p>
-              DxLabs shared Wardle's four-week beta pilot with 85 medical trainees in Kenya, highlighting early
-              feasibility, learner engagement and the role of daily case practice in strengthening clinical reasoning.
+              DxLabs shared findings from Wardle's four-week beta with 85 participants in Kenya, including retention,
+              recommendation, confidence and daily-practice engagement signals from the early pilot.
             </p>
             <div className="event-slide-note" aria-live="polite">
               <strong>{active.stat}</strong>
@@ -1041,6 +1102,7 @@ export default function App() {
           <About />
           <Wardle onDemo={(event) => openDemo(event.currentTarget)} />
           <EvidenceStrip />
+          <BetaFindings />
           <Focus />
           <News />
           <Leadership />
