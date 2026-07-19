@@ -6,7 +6,7 @@ import gideonPhoto from '../assets/dr-gideon-saningo.png';
 import wardleBreakdown from './assets/wardle/wardle-case-breakdown.webp';
 import wardleLeaderboard from './assets/wardle/wardle-leaderboard.webp';
 import wardleLearnRecall from './assets/wardle/wardle-learn-recall.webp';
-import wardleProgressiveCase from './assets/wardle/wardle-progressive-case.png';
+import wardleProgressiveCase from './assets/wardle/wardle-progressive-case.webp';
 
 const contactEmail = 'dxlabssupport@gmail.com';
 const linkedInUrl = import.meta.env.VITE_DXLABS_LINKEDIN_URL?.trim() || '';
