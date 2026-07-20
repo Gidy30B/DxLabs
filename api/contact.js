@@ -138,7 +138,7 @@ export default async function handler(req, res) {
   const email = buildEmail(data);
 
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: CONTACT_FROM_EMAIL,
       to: CONTACT_TO_EMAIL,
       replyTo: data.email,
@@ -147,9 +147,24 @@ export default async function handler(req, res) {
       html: email.html,
     });
 
+    if (result.error || !result.data?.id) {
+      console.error('Contact email provider rejected the message.', {
+        error: result.error,
+        to: CONTACT_TO_EMAIL,
+        from: CONTACT_FROM_EMAIL,
+      });
+      return sendJson(res, 502, { ok: false, message: 'We could not send your enquiry. Please try again later.' });
+    }
+
+    console.info('Contact email accepted by provider.', {
+      id: result.data.id,
+      to: CONTACT_TO_EMAIL,
+      from: CONTACT_FROM_EMAIL,
+    });
+
     return sendJson(res, 201, { ok: true, message: 'Thank you. Your enquiry has been sent to DxLabs.' });
   } catch (error) {
-    console.error('Contact email provider failed.');
+    console.error('Contact email provider failed.', error);
     return sendJson(res, 502, { ok: false, message: 'We could not send your enquiry. Please try again later.' });
   }
 }
