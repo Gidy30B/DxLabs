@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import logo from '../assets/dxlabs-logo.svg';
 import presentationOne from '../assets/meded-africa-2026-presentation-1.jpeg';
 import conferenceVenue from '../assets/meded-africa-2026-venue.jpeg';
+import faithPhoto from '../assets/dr-faith-keru.jpeg';
 import gideonPhoto from '../assets/dr-gideon-saningo.png';
 import wardleBreakdown from './assets/wardle/wardle-case-breakdown.webp';
 import wardleLeaderboard from './assets/wardle/wardle-leaderboard.webp';
@@ -796,7 +797,9 @@ function Leadership() {
         </div>
         <div className="team-grid-v5">
           <article className="team-card-v5 reveal">
-            <div className="team-photo-v5 initials">FK</div>
+            <div className="team-photo-v5">
+              <img alt="Dr Faith Keru, Co-founder and Chief Executive Officer of DxLabs" src={faithPhoto} />
+            </div>
             <div className="team-copy-v5">
               <span className="role">Co-founder &amp; Chief Executive Officer</span>
               <h3>Dr Faith Keru</h3>
